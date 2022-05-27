@@ -1,0 +1,105 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2022-05-23T01:40:26.675Z\n"
+"PO-Revision-Date: 2022-05-23T01:40:26.675Z\n"
+
+msgctxt "CLOSE"
+msgid "CN"
+msgstr "CN_CLOSE"
+
+msgctxt "CLOSE"
+msgid "BTN"
+msgstr "BTN_CLOSE"
+
+msgctxt "TITLE"
+msgid "CN"
+msgstr "CN_TITLE"
+
+msgctxt "METADATA"
+msgid "CN_SUBTITLE"
+msgstr "CN_SUBTITLE_METADATA"
+
+msgctxt "ACCESS"
+msgid "NO"
+msgstr "NO_ACCESS"
+
+msgctxt "ACCESS"
+msgid "TABLE_METADATA"
+msgstr "TABLE_METADATA_ACCESS"
+
+msgctxt "ACCESS"
+msgid "TABLE_DATA"
+msgstr "TABLE_DATA_ACCESS"
+
+msgctxt "VIEW"
+msgid "CAN"
+msgstr "CAN_VIEW"
+
+msgctxt "EDIT"
+msgid "CAN"
+msgstr "CAN_EDIT"
+
+msgctxt "DATA"
+msgid "CN_SUBTITLE"
+msgstr "CN_SUBTITLE_DATA"
+
+msgctxt "MODE"
+msgid "TAB_VIEW"
+msgstr "TAB_VIEW_MODE"
+
+msgctxt "MODE"
+msgid "TAB_EDIT"
+msgstr "TAB_EDIT_MODE"
+
+msgctxt "SEARCHNAME"
+msgid "LABEL"
+msgstr "LABEL_SEARCHNAME"
+
+msgctxt "SEARCHPROGRAMORDATASET"
+msgid "LABEL"
+msgstr "LABEL_SEARCHPROGRAMORDATASET"
+
+msgctxt "NAME"
+msgid "TABLE"
+msgstr "TABLE_NAME"
+
+msgctxt "NAME"
+msgid "TABLE_USER"
+msgstr "TABLE_USER_NAME"
+
+msgctxt "PUBLICACCESS"
+msgid "TABLE"
+msgstr "TABLE_PUBLICACCESS"
+
+msgctxt "EXTERNALACCESS"
+msgid "TABLE"
+msgstr "TABLE_EXTERNALACCESS"
+
+msgctxt "SHARINGGROUP"
+msgid "TABLE"
+msgstr "TABLE_SHARINGGROUP"
+
+msgctxt "SHARINGUSER"
+msgid "TABLE"
+msgstr "TABLE_SHARINGUSER"
+
+msgctxt "DATABUTTON"
+msgid "MESSAGE_DISABLED"
+msgstr "MESSAGE_DISABLED_DATABUTTON"
+
+msgctxt "GROUP"
+msgid "TITLE_SEARCH"
+msgstr "TITLE_SEARCH_GROUP"
+
+msgid "search"
+msgstr "search"
+
+msgid "STEP"
+msgid_plural "STEP"
+msgstr[0] ""
+msgstr[1] "STEP_2"
