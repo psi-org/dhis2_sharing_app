@@ -1,6 +1,6 @@
 {
-  "name": "app",
-  "version": "1.0.0",
+  "name": "sharingsetting",
+  "version": "2.5.0",
   "description": "",
   "license": "BSD-3-Clause",
   "private": true,
@@ -10,15 +10,16 @@
     "test": "d2-app-scripts test",
     "deploy": "d2-app-scripts deploy"
   },
-  "devDependencies": {
-    "@dhis2/cli-app-scripts": "^9.0.0"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@dhis2/app-runtime": "^3.4.3",
+    "@dhis2/cli-app-scripts": "^9.0.0",
+    "@dhis2/d2-i18n": "^1.1.0",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.6.2",
     "@mui/material": "^5.6.4",
+    "jsonpath": "^1.1.1",
     "sass": "^1.51.0"
   }
 }

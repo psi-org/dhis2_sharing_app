@@ -5,101 +5,266 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2022-05-23T01:40:26.675Z\n"
-"PO-Revision-Date: 2022-05-23T01:40:26.675Z\n"
+"POT-Creation-Date: 2022-07-24T21:29:08.728Z\n"
+"PO-Revision-Date: 2022-07-24T21:29:08.728Z\n"
 
-msgctxt "CLOSE"
-msgid "CN"
-msgstr "CN_CLOSE"
+msgid "Select at least one object, user or group"
+msgstr "Select at least one object, user or group"
 
-msgctxt "CLOSE"
-msgid "BTN"
-msgstr "BTN_CLOSE"
+msgid " ASSING All ("
+msgstr " ASSING All ("
 
-msgctxt "TITLE"
-msgid "CN"
-msgstr "CN_TITLE"
+msgid "Strategy to save Sharing Setting to all object selected"
+msgstr "Strategy to save Sharing Setting to all object selected"
 
-msgctxt "METADATA"
-msgid "CN_SUBTITLE"
-msgstr "CN_SUBTITLE_METADATA"
+msgid "Overwrite Sharing settings"
+msgstr "Overwrite Sharing settings"
 
-msgctxt "ACCESS"
-msgid "NO"
-msgstr "NO_ACCESS"
+msgid "Merge with current Sharing settings"
+msgstr "Merge with current Sharing settings"
 
-msgctxt "ACCESS"
-msgid "TABLE_METADATA"
-msgstr "TABLE_METADATA_ACCESS"
+msgid "Select the Object"
+msgstr "Select the Object"
 
-msgctxt "ACCESS"
-msgid "TABLE_DATA"
-msgstr "TABLE_DATA_ACCESS"
+msgid "Define sharing and access options"
+msgstr "Define sharing and access options"
 
-msgctxt "VIEW"
-msgid "CAN"
-msgstr "CAN_VIEW"
+msgid "Summary"
+msgstr "Summary"
 
-msgctxt "EDIT"
-msgid "CAN"
-msgstr "CAN_EDIT"
+msgid "Number of objects updated"
+msgstr "Number of objects updated"
 
-msgctxt "DATA"
-msgid "CN_SUBTITLE"
-msgstr "CN_SUBTITLE_DATA"
+msgid "Number of objects don't updated"
+msgstr "Number of objects don't updated"
 
-msgctxt "MODE"
-msgid "TAB_VIEW"
-msgstr "TAB_VIEW_MODE"
+msgid "FINISH"
+msgstr "FINISH"
 
-msgctxt "MODE"
-msgid "TAB_EDIT"
-msgstr "TAB_EDIT_MODE"
+msgid "CANCEL"
+msgstr "CANCEL"
 
-msgctxt "SEARCHNAME"
-msgid "LABEL"
-msgstr "LABEL_SEARCHNAME"
+msgid "BACK"
+msgstr "BACK"
 
-msgctxt "SEARCHPROGRAMORDATASET"
-msgid "LABEL"
-msgstr "LABEL_SEARCHPROGRAMORDATASET"
+msgid "SAVE SETTING"
+msgstr "SAVE SETTING"
 
-msgctxt "NAME"
-msgid "TABLE"
-msgstr "TABLE_NAME"
+msgid " NEXT"
+msgstr " NEXT"
 
-msgctxt "NAME"
-msgid "TABLE_USER"
-msgstr "TABLE_USER_NAME"
+msgid "Conventions"
+msgstr "Conventions"
 
-msgctxt "PUBLICACCESS"
-msgid "TABLE"
-msgstr "TABLE_PUBLICACCESS"
+msgid "METADATA - privileges related to access"
+msgstr "METADATA - privileges related to access"
 
-msgctxt "EXTERNALACCESS"
-msgid "TABLE"
-msgstr "TABLE_EXTERNALACCESS"
+msgid "No Access"
+msgstr "No Access"
 
-msgctxt "SHARINGGROUP"
-msgid "TABLE"
-msgstr "TABLE_SHARINGGROUP"
+msgid "Can find and view"
+msgstr "Can find and view"
 
-msgctxt "SHARINGUSER"
-msgid "TABLE"
-msgstr "TABLE_SHARINGUSER"
+msgid "Can find, view and edit"
+msgstr "Can find, view and edit"
 
-msgctxt "DATABUTTON"
-msgid "MESSAGE_DISABLED"
-msgstr "MESSAGE_DISABLED_DATABUTTON"
+msgid "DATA - Privileges related to data registration and access"
+msgstr "DATA - Privileges related to data registration and access"
 
-msgctxt "GROUP"
-msgid "TITLE_SEARCH"
-msgstr "TITLE_SEARCH_GROUP"
+msgid "Can register"
+msgstr "Can register"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Individual mode"
+msgstr "Individual mode"
+
+msgid "Bulk mode"
+msgstr "Bulk mode"
+
+msgid " Search by name"
+msgstr " Search by name"
+
+msgid "<No value>"
+msgstr "<No value>"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Public Access"
+msgstr "Public Access"
+
+msgid "External Access"
+msgstr "External Access"
+
+msgid "Groups"
+msgstr "Groups"
+
+msgid "Users"
+msgstr "Users"
+
+msgid " User"
+msgstr " User"
+
+msgid " METADATA"
+msgstr " METADATA"
+
+msgid " DATA"
+msgstr " DATA"
+
+msgid "Not available for this type of object"
+msgstr "Not available for this type of object"
+
+msgid "Add users and user groups"
+msgstr "Add users and user groups"
+
+msgid "View only"
+msgstr "View only"
+
+msgid "View and edit"
+msgstr "View and edit"
+
+msgid "Give access to a user or group"
+msgstr "Give access to a user or group"
+
+msgid "Access level"
+msgstr "Access level"
+
+msgid "Select a level"
+msgstr "Select a level"
+
+msgid "Not available offline"
+msgstr "Not available offline"
+
+msgid "Give access"
+msgstr "Give access"
+
+msgid "Users and groups that currently have access"
+msgstr "Users and groups that currently have access"
+
+msgid "Clean list"
+msgstr "Clean list"
+
+msgid "User / Group"
+msgstr "User / Group"
+
+msgid "All users"
+msgstr "All users"
+
+msgid "External access"
+msgstr "External access"
+
+msgid "No access"
+msgstr "No access"
+
+msgid "Can view"
+msgstr "Can view"
+
+msgid "Can view and edit"
+msgstr "Can view and edit"
+
+msgid "Metadata"
+msgstr "Metadata"
+
+msgid "Remove access"
+msgstr "Remove access"
+
+msgid "User or group"
+msgstr "User or group"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Apply dashboard sharing settings to visualizations"
+msgstr "Apply dashboard sharing settings to visualizations"
+
+msgid "Something went wrong"
+msgstr "Something went wrong"
+
+msgid "Apply sharing to dashboard visualizations"
+msgstr "Apply sharing to dashboard visualizations"
+
+msgid ""
+"No visualizations were updated. Check that you have permission to change "
+"sharing for all visualizations."
+msgstr ""
+"No visualizations were updated. Check that you have permission to change "
+"sharing for all visualizations."
+
+msgid ""
+"Not all visualizations could be updated successfully. {{ success }} updated "
+"successfully, {{ failed }} failed to update. Check that you have permission "
+"to change sharing for all visualizations."
+msgstr ""
+"Not all visualizations could be updated successfully. {{ success }} updated "
+"successfully, {{ failed }} failed to update. Check that you have permission "
+"to change sharing for all visualizations."
+
+msgid ""
+"No visualizations were updated because sharing settings are already "
+"sufficient."
+msgstr ""
+"No visualizations were updated because sharing settings are already "
+"sufficient."
+
+msgid "Successfully updated sharing for all visualizations."
+msgstr "Successfully updated sharing for all visualizations."
+
+msgid ""
+"Not all visualization sharing settings needed to be updated. {{ updated }} "
+"updated, {{ skipped }} already had sufficient sharing settings."
+msgstr ""
+"Not all visualization sharing settings needed to be updated. {{ updated }} "
+"updated, {{ skipped }} already had sufficient sharing settings."
+
+msgid "There are no users or groups to apply sharing settings for."
+msgstr "There are no users or groups to apply sharing settings for."
+
+msgid ""
+"Number of visualizations on this dashboard that will potentially get "
+"updated sharing settings: {{ visualizationsCount }}. The number of users or "
+"groups that these updated settings will apply to: {{ entityAmount }}."
+msgstr ""
+"Number of visualizations on this dashboard that will potentially get "
+"updated sharing settings: {{ visualizationsCount }}. The number of users or "
+"groups that these updated settings will apply to: {{ entityAmount }}."
+
+msgid ""
+"Applying the same sharing settings makes sure that users and groups that "
+"have access to the dashboard also have at least \"View only\" access to its "
+"visualizations (charts, tables, maps, event charts and event reports)."
+msgstr ""
+"Applying the same sharing settings makes sure that users and groups that "
+"have access to the dashboard also have at least \"View only\" access to its "
+"visualizations (charts, tables, maps, event charts and event reports)."
+
+msgid ""
+"If a user or group already has \"View and edit\" access to a visualization, "
+"this won't be reduced to \"View only\". The \"All users\" access level "
+"won't be updated or changed."
+msgstr ""
+"If a user or group already has \"View and edit\" access to a visualization, "
+"this won't be reduced to \"View only\". The \"All users\" access level "
+"won't be updated or changed."
+
+msgid ""
+"Applying sharing can't be undone, and needs to be done again if new "
+"visualizations are added to the dashboard or its sharing settings are "
+"changed."
+msgstr ""
+"Applying sharing can't be undone, and needs to be done again if new "
+"visualizations are added to the dashboard or its sharing settings are "
+"changed."
+
+msgid "Sharing and access: {{- objectName}}"
+msgstr "Sharing and access: {{- objectName}}"
+
+msgid "Sharing and access"
+msgstr "Sharing and access"
+
+msgid "Dashboard sharing"
+msgstr "Dashboard sharing"
 
 msgid "search"
 msgstr "search"
-
-msgid "STEP"
-msgid_plural "STEP"
-msgstr[0] ""
-msgstr[1] "STEP_2"

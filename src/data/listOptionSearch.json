@@ -1,103 +1,114 @@
 {
-    "options":[
-        {
-          "code":"LABEL_NOVALUE",
-          "value":"",
-          "disabled":true,
-          "tooltipText":"LABEL_NOVALUE_TTT"
-        },
-        {
-          "code":"LABEL_SEARCHDATASET",
-          "value":"dataSets",
-          "disabled":false,
-          "tooltipText":"LABEL_SEARCHDATASET_TTT",
-          "filter":"?fields=dataSetElements"
-        },
-        {
-            "code":"LABEL_SEARCHPROGRAM",
-            "value":"programs",
-            "disabled":false,
-            "tooltipText":"LABEL_SEARCHPROGRAM_TTT",
-            "filter":"?fields=programTrackedEntityAttributes[trackedEntityAttribute[id]],programIndicators,programStages[id,programStageDataElements[dataElement]]"
-        },
-        {
-            "code":"LABEL_SEARCHPROGRAMSTAGE",
-            "value":"programStages",
-            "disabled":false,
-            "tooltipText":"LABEL_SEARCHPROGRAMSTAGE_TTT",
-            "filter":"?fields=programStageDataElements[dataElement]"
-        },
-        {
-            "code":"LABEL_SEARCHDATAELEMENTGROUP",
-            "value":"dataElementGroups",
-            "disabled":false,
-            "tooltipText":"LABEL_SEARCHDATAELEMENTGROUP_TTT",
-            "filter":"?fields=id,name,dataElements[id]"
-        },
-        {
-          "code":"LABEL_SEARCHINDICATOR",
-          "value":"programIndicators",
-          "disabled":false,
-          "tooltipText":"LABEL_SEARCHINDICATOR_TTT",
-          "filter":"?fields=expression"
-      }, 
-        {
-            "code":"LABEL_SEARCHUSERGROUP",
-            "value":"userGroups",
-            "disabled":false,
-            "tooltipText":"LABEL_SEARCHUSERGROUP_TTT",
-            "filter":"?fields=*"
-        },
-        {
-            "code":"LABEL_SEARCHUSER",
-            "value":"users",
-            "disabled":false,
-            "tooltipText":"LABEL_SEARCHUSER_TTT",
-            "filter":"?fields=*"
-        },
-        {
-            "code":"LABEL_OUGROUPSET",
-            "value":"organisationUnitGroupSets",
-            "disabled":false,
-            "tooltipText":"LABEL_OUGROUPSET_TTT",
-            "filter":"?fields=*"
-        },
-        {
-            "code":"LABEL_INDICATORGROUPS",
-            "value":"indicatorGroups",
-            "disabled":false,
-            "tooltipText":"LABEL_INDICATORGROUPS_TTT",
-            "filter":"?fields=*"
-        },
-        {
-            "code":"LABEL_CATEGORYOPGROUPSET",
-            "value":"categoryOptionGroupSets",
-            "disabled":false,
-            "tooltipText":"LABEL_CATEGORYOPGROUPSET_TTT",
-            "filter":"?fields=*"
-        },
-        {
-            "code":"LABEL_CATEGORY",
-            "value":"categories",
-            "disabled":false,
-            "tooltipText":"LABEL_CATEGORY_TTT",
-            "filter":"?fields=*"
-        },
-        {
-            "code":"LABEL_CATEGORYOPTIONGROUP",
-            "value":"categoryOptionGroup",
-            "disabled":false,
-            "tooltipText":"LABEL_CATEGORYOPTIONGROUP_TTT",
-            "filter":"?fields=*"
-        },
-        {
-            "code":"LABEL_CATEGORYCOMBO",
-            "value":"categoryCombo",
-            "disabled":false,
-            "tooltipText":"LABEL_CATEGORYCOMBO_TTT",
-            "filter":"?fields=*"
-        }
-       
-      
-      ]
-}
+    "options": [
+      {
+        "code": "<No value>",
+        "disabled": true,
+        "tooltipText": "Select one filter option",
+        "value": ""
+      },
+      {
+        "code": "Data Set",
+        "disabled": false,
+        "filter": "?fields=dataSetElements",
+        "tooltipText": "Write dataset name here",
+        "value": "dataSets",
+        "expression":"$..id"
+      },
+      {
+        "code": "Program",
+        "disabled": false,
+        "filter": "?fields=programStages[programStageDataElements[dataElement]]",
+        "tooltipText": " Write program name here",
+        "value": "programs",
+        "expression":"$..id"
+      },
+      {
+        "code": "Program Stage",
+        "disabled": false,
+        "filter": "?fields=programStageDataElements[dataElement]",
+        "tooltipText": " Write programStage name here",
+        "value": "programStages",
+        "expression":"$..id"
+      },
+      {
+        "code": "DataElement Groups",
+        "disabled": false,
+        "filter": "?fields=id,name,dataElements[id]",
+        "tooltipText": "Write DataElement group name here",
+        "value": "dataElementGroups",
+        "expression":"$..id"
+      },
+      {
+        "code": "Program indicators",
+        "disabled": false,
+        "filter": "?fields=expression",
+        "tooltipText": "Write program indicator name here",
+        "value": "programIndicators",
+        "expression":"$..id"
+      },
+      {
+        "code": "User groups",
+        "disabled": false,
+        "filter": "?fields=*",
+        "tooltipText": "Write user group name here",
+        "value": "userGroups",
+        "expression":"$..id"
+      },
+      {
+        "code": "Users",
+        "disabled": false,
+        "filter": "?fields=*",
+        "tooltipText": "write user name here",
+        "value": "users",
+        "expression":"$..id"
+      },
+      {
+        "code": "OU group set",
+        "disabled": false,
+        "filter": "?fields=*",
+        "tooltipText": "Write name here",
+        "value": "organisationUnitGroupSets",
+        "expression":"$..id"
+      },
+      {
+        "code": "Indicator group",
+        "disabled": false,
+        "filter": "?fields=*",
+        "tooltipText": "Write indicator group here",
+        "value": "indicatorGroups",
+        "expression":"$..id"
+      },
+      {
+        "code": "Category option group set",
+        "disabled": false,
+        "filter": "?fields=*",
+        "tooltipText": "Write category option group set name here",
+        "value": "categoryOptionGroupSets",
+        "expression":"$..id"
+      },
+      {
+        "code": "Category",
+        "disabled": false,
+        "filter": "?fields=*",
+        "tooltipText": "Write category name here",
+        "value": "categories",
+        "expression":"$..id"
+      },
+      {
+        "code": "Category option group",
+        "disabled": false,
+        "filter": "?fields=*",
+        "tooltipText": "Write category option group name here",
+        "value": "categoryOptionGroup",
+        "expression":"$..id"
+      },
+      {
+        "code": "Category Combo",
+        "disabled": false,
+        "filter": "?fields=*",
+        "tooltipText": "Write category Combo name here",
+        "value": "categoryCombo",
+        "expression":"$..id"
+      }
+    ]
+  }

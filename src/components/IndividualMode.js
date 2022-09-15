@@ -5,25 +5,23 @@ import ActionDoneAll from '@mui/icons-material/DoneAll';
 import LinearProgress from '@mui/material/LinearProgress';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
 import More from '@mui/icons-material/MoreVert';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
+import TablePagination from '@mui/material/TablePagination';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import appTheme from '../theme';
 //dhis2
 import i18n from '../locales/index.js'
-import { post } from '../API/Dhis2.js';
+import { post,get } from '../API/Dhis2.js';
+import {SharingDialog} from './sharing-dialog';
 
-import ListGroups from './ListGroups';
+import {CustomDataProvider} from '@dhis2/app-runtime';
+
 const styles = {
   header: {
     fontSize: 24,
@@ -59,8 +57,7 @@ const styles = {
     with: 50
   },
   divConcentTable: {
-    height: 600,
-    overflow: 'auto'
+    
   }
 
 };
@@ -71,59 +68,99 @@ class IndividualMode extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { currentPage: 0, openModal: false, userAndGroupsSelected: {}, messajeError: "mensaje de error" }
+    this.state = {openModal: false, userAndGroupsSelected: {}, messajeError: "mensaje de error",rowsPerPage:50,page:1,rowlength:0,usersAndgroups:{}}
   }
   //query resource Selected
   async setResourceSelected(urlAPI, Payload) {
     try {
       let res = await post(urlAPI, Payload);
       //update change on listview
-      this.props.handleChangeTabs("view");
+      this.props.handleChangeTabs(undefined,"view",1);
       return res;
     }
     catch (e) {
       return e;
     }
   }
-  SendInformationAPI(obj, userAccesses, userGroupAccesses) {
+    //query resource Selected
+  async getUsersandGroups() {
+     let api_users="/users?fields=id,name,displayName&paging=false"
+     let api_usersgroups="/userGroups?fields=id,name,displayName&paging=false"
+     let result={users:[],userGroups:[]};
+      try {
+        let result_users = await get(api_users);
+        if(result_users.users.length>0)
+          result.users=result_users.users;
+        let result_groups = await get(api_usersgroups);
+        if(result_groups.userGroups.length>0)
+          result.userGroups=result_groups.userGroups;
+        return result;       
+      }
+      catch (e) {
+        return e;
+      }
+    }
+  
+  setObjectSetting(info){
     let valToSave = {
       meta: {
-        allowPublicAccess: (this.state.PublicAccess == 0 ? false : true),
-        allowExternalAccess: this.state.ExternalAccess
+        allowPublicAccess: (info.data.object.publicAccess === '--------' ? false : true),
+        allowExternalAccess: info.data.object.externalAccess
       },
       object: {
-        id: obj.id,
-        displayName: obj.displayName,
-        externalAccess: obj.externalAccess,
-        name: obj.name,
-        publicAccess: obj.publicAccess,
-        userAccesses,
-        userGroupAccesses,
+        id: info.data.object.id,
+        displayName: info.data.object.displayName,
+        externalAccess: info.data.object.externalAccess,
+        name: info.data.object.name,
+        publicAccess: info.data.object.publicAccess,
+        userAccesses:info.data.object.userAccesses,
+        userGroupAccesses:info.data.object.userGroupAccesses,
       }
 
     }
-    // this.setResourceSelected("/sharing?type=" + this.props.resource.key + "&id=" + obj.id, valToSave).then(res => {
-    //   if (res.status != "OK")
-    //     this.setState({ messajeError: res.message })
-    // })
+    this.setState({userAndGroupsSelected:valToSave.object})
+    this.setResourceSelected("/sharing?type=" + this.props.resource.key + "&id=" + this.state.userAndGroupsSelected.id, valToSave).then(res => {
+      if (res.status != "OK")
+        this.setState({ messajeError: res.message })
+        this.handleOpen(valToSave.object);
+        
+    })
   }
-
+  
   handleOpen(data) {
 
-    this.setState({ openModal: true, userAndGroupsSelected: data });
+    //fix error
+    data.userAccesses=data.userAccesses.map(ua=>{
+      if(ua.access==="--------"){
+        ua.access="r-------";
+      }
+      return ua;
+    })
+    data.userGroupAccesses=data.userGroupAccesses.map(ug=>{
+      if(ug.access==="--------"){
+        ug.access="r-------";
+      }
+      return ug;
+    })
+     this.setState({ openModal: true, userAndGroupsSelected: data });
   };
 
   handleClose() {
     this.setState({ openModal: false });
   };
-  GroupSelected(selected) {
-    this.SendInformationAPI(this.state.userAndGroupsSelected, selected.userAccesses, selected.userGroupAccesses);
+  async componentDidMount() {
+   
+    this.state = {openModal: false, userAndGroupsSelected: {}, messajeError: ""};
+    this.setState({usersAndgroups: await  this.getUsersandGroups()});
   }
-  componentDidMount() {
-    this.state = { currentPage: this.props.currentPage, openModal: false, userAndGroupsSelected: {}, messajeError: "" };
+  handleChangeRowsPerPage = (event) => {
+    this.setState({rowsPerPage:parseInt(event.target.value, 10),page:0});
+  };
+
+  handleChangePage=(e,newpage)=>{
+    this.props.handleChangeTabs(undefined,"view",newpage);
+    this.setState({page:newpage});
   }
-
-
   waiting() {
     var hide = true;
     setTimeout(() => { hide = true }, 5000)
@@ -133,12 +170,19 @@ class IndividualMode extends React.Component {
       </div>
     )
   }
+  removeAll(){
+    let userAndGroupsSelected= {
+      userAccesses: [],
+      userGroupAccesses: []
+    }
+    this.setState({userAndGroupsSelected:userAndGroupsSelected});
+  }
   //methods
   resolveAccessMessage(access, type) {
     const publicAccessStatus = {
-      "rw": "CAN_EDIT",
-      "r-": "CAN_VIEW",
-      "--": "NO_ACCESS",
+      "rw": "Can find, view and edit",
+      "r-": "Can find and view",
+      "--": "No Access",
     }
     try {
       let metaDataAccess = access[0] + access[1];
@@ -150,7 +194,7 @@ class IndividualMode extends React.Component {
         return publicAccessStatus[metaDataAccess];
       }
     } catch (er) {
-      return "NO_ACCESS"
+      return "No Access"
     }
   }
   renderResultInTable() {
@@ -172,10 +216,10 @@ class IndividualMode extends React.Component {
       else
         var lastUS = "";
       //filter by name ir by filter selected
-      if (((row.displayName.includes(this.props.searchByName) == true) && (this.props.filterString.includes(row.id) == true || this.props.filterString == "")))
+      //if (((row.displayName.includes(this.props.searchByName) == true) && (this.props.filterString.includes(row.id) == true || this.props.filterString == "")))
         return (<TableRow key={keysCount}>
           <TableCell style={styles.tablerow}>{row.displayName}</TableCell >
-          <TableCell style={styles.tablerow}>{funResolvMessage(row.publicAccess, "metadata") == "CAN_EDIT" ? <ActionDoneAll /> : funResolvMessage(row.publicAccess, "metadata") == "CAN_VIEW" ? <ActionDone /> : <None />}</TableCell >
+          <TableCell style={styles.tablerow}>{funResolvMessage(row.publicAccess, "metadata") == "Can find, view and edit" ? <ActionDoneAll /> : funResolvMessage(row.publicAccess, "metadata") == "Can find and view" ? <ActionDone /> : <None />}</TableCell >
           <TableCell style={styles.tablerow}>{row.externalAccess ? <ActionDone /> : <None />}</TableCell >
           <TableCell style={styles.tablerow}>
 
@@ -189,7 +233,7 @@ class IndividualMode extends React.Component {
                     {ug.access[1] == "w" ? <ActionDoneAll /> : <ActionDone />}
                     {ug.access[3] == "w" ? <ActionDoneAll /> : ug.access[2] == "r" ? <ActionDone /> : <None />}
                   </div>
-                  <div>{ug.displayName}</div>
+                  <div>{ug.name}</div>
                   {lastUG != ug.id ? <Divider /> : ""}
                 </div>)
             })
@@ -206,7 +250,7 @@ class IndividualMode extends React.Component {
                     {us.access[1] == "w" ? <ActionDoneAll /> : <ActionDone />}
                     {us.access[3] == "w" ? <ActionDoneAll /> : us.access[2] == "r" ? <ActionDone /> : <None />}
                   </div>
-                  <div>{us.displayName}</div>
+                  <div>{us.name}</div>
                   {lastUS != us.id ? <Divider /> : ""}
                 </div>)
             })
@@ -215,12 +259,13 @@ class IndividualMode extends React.Component {
           </TableCell >
           <TableCell style={styles.buttonMore}>
             <IconButton onClick={() => this.handleOpen(row)}><More />   </IconButton>
-          </TableCell >
+          </TableCell>
         </TableRow>)
     })
 
 
   }
+  
   render() {
     return (
       <div>
@@ -228,14 +273,24 @@ class IndividualMode extends React.Component {
           {
             //this.waiting()
           }
+          <TablePagination
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              component="div"
+              count={this.props.pager.total}
+              rowsPerPage={this.state.rowsPerPage}
+              page={this.state.page}
+              onPageChange={this.handleChangePage}
+              onRowsPerPageChange={this.handleChangeRowsPerPage}
+            />
           <Table>
+            
             <TableHead displaySelectAll={false} adjustForCheckbox={this.props.Enabledchecked}>
               <TableRow>
-                <TableCell >{i18n.t("TABLE_NAME")}</TableCell >
-                <TableCell >{i18n.t("TABLE_PUBLICACCESS")}</TableCell >
-                <TableCell >{i18n.t("TABLE_EXTERNALACCESS")}</TableCell >
-                <TableCell style={styles.buttonGroup}>{i18n.t("TABLE_SHARINGGROUP")}</TableCell >
-                <TableCell style={styles.buttonGroup}>{i18n.t("TABLE_SHARINGUSER")}</TableCell >
+                <TableCell >{i18n.t("Name")}</TableCell >
+                <TableCell >{i18n.t("Public Access")}</TableCell >
+                <TableCell >{i18n.t("External Access")}</TableCell >
+                <TableCell style={styles.buttonGroup}>{i18n.t("Groups")}</TableCell >
+                <TableCell style={styles.buttonGroup}>{i18n.t("Users")}</TableCell >
                 <TableCell style={styles.buttonMore}></TableCell >
               </TableRow>
             </TableHead >
@@ -244,29 +299,36 @@ class IndividualMode extends React.Component {
             </TableBody>
 
           </Table>
-          <Dialog
-            modal={false}
-            open={this.state.openModal}
-            onRequestClose={this.handleClose.bind(this)}
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25, 50, 100]}
+            component="div"
+            count={this.props.pager.total}
+            rowsPerPage={this.state.rowsPerPage}
+            page={this.state.page}
+            onPageChange={this.handleChangePage}
+            onRowsPerPageChange={this.handleChangeRowsPerPage}
+          />
+         
+          <CustomDataProvider
+              data={{
+                  sharing: {
+                      meta: {
+                          allowExternalAccess: true,
+                          allowPublicAccess: true
+                      },
+                      object: this.state.userAndGroupsSelected                     
+                  },
+                  'sharing/search':Object.assign({}, this.state.usersAndgroups, this.state.userAndGroupsSelected)                 
+              }}
           >
-            <DialogTitle id="alert-dialog-title">
-              {i18n.t("STEP_2")}
-            </DialogTitle>
-            <DialogContent>
-              <div style={{ marginTop: 12, textAlign: 'center', color: "Red", position: "relative" }}>
-                <p>{this.state.messajeError}</p>
-              </div>
-              <ListGroups GroupSelected={this.GroupSelected.bind(this)} resource={this.props.resource} currentSelected={this.state.userAndGroupsSelected} />
+          {this.state.userAndGroupsSelected.id !== undefined && this.state.openModal && (
+                          <SharingDialog id={this.state.userAndGroupsSelected.id} sharingSettingObject={this.state.userAndGroupsSelected} onClose={()=>this.handleClose()} type={this.props.resource.resource} modal={true} callback={this.setObjectSetting.bind(this)} allowExternalAccess={this.props.informationResource.authorities.find(a=>a.type==="EXTERNALIZE")!==undefined?true:false} removeAll={this.removeAll.bind(this)} />
+            )}
+        </CustomDataProvider>
+              
+               
+              
 
-            </DialogContent>
-            <DialogActions>
-              <Button
-                label={i18n.t("BTN_CLOSE")}
-                primary={true}
-                onClick={this.handleClose.bind(this)}
-              />
-            </DialogActions>
-          </Dialog>
 
         </div>
       </div>
