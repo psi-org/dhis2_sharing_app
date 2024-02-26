@@ -71,10 +71,5 @@
     "Sharing and access: {{- objectName}}": "Sharing and access: {{- objectName}}",
     "Sharing and access": "Sharing and access",
     "Dashboard sharing": "Dashboard sharing",
-    "search": "search",
-    "TABLE_USER_NAME": "TABLE_USER_NAME",
-    "TABLE_METADATA_ACCESS": "TABLE_METADATA_ACCESS",
-    "TABLE_DATA_ACCESS": "TABLE_DATA_ACCESS",
-    "MESSAGE_DISABLED_DATABUTTON": "MESSAGE_DISABLED_DATABUTTON",
-    "TITLE_SEARCH_GROUP": "TITLE_SEARCH_GROUP"
+    "search": "search"
 }
