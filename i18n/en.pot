@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2022-07-24T21:29:08.728Z\n"
-"PO-Revision-Date: 2022-07-24T21:29:08.728Z\n"
+"POT-Creation-Date: 2024-02-26T17:48:38.708Z\n"
+"PO-Revision-Date: 2024-02-26T17:48:38.708Z\n"
 
 msgid "Select at least one object, user or group"
 msgstr "Select at least one object, user or group"
@@ -268,3 +268,23 @@ msgstr "Dashboard sharing"
 
 msgid "search"
 msgstr "search"
+
+msgctxt "NAME"
+msgid "TABLE_USER"
+msgstr "TABLE_USER_NAME"
+
+msgctxt "ACCESS"
+msgid "TABLE_METADATA"
+msgstr "TABLE_METADATA_ACCESS"
+
+msgctxt "ACCESS"
+msgid "TABLE_DATA"
+msgstr "TABLE_DATA_ACCESS"
+
+msgctxt "DATABUTTON"
+msgid "MESSAGE_DISABLED"
+msgstr "MESSAGE_DISABLED_DATABUTTON"
+
+msgctxt "GROUP"
+msgid "TITLE_SEARCH"
+msgstr "TITLE_SEARCH_GROUP"
