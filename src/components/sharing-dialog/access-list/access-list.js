@@ -30,16 +30,16 @@ export const AccessList = ({
     removeAll
 }) => (
     <>
-        <div style={{display:'grid',gridTemplateColumns:'90% 10%'}}>
-             <Title>{i18n.t('Users and groups that currently have access')}</Title>
-             <Tooltip title={i18n.t('Clean list')}>
-                <IconButton aria-label="close" size="small" onClick={()=>removeAll()}>
+        <div style={{ display: 'grid', gridTemplateColumns: '90% 10%' }}>
+            <Title>{i18n.t('Users and groups that currently have access')}</Title>
+            <Tooltip title={i18n.t('Clean list')}>
+                <IconButton aria-label="close" size="small" onClick={() => removeAll()}>
                     <ClearAllIcon fontSize="inherit" />
                 </IconButton>
             </Tooltip>
         </div>
-       
-        
+
+
         <div className="header">
             <div className="header-left-column">{i18n.t('User / Group')}</div>
             <div className="header-right-column">{i18n.t('Access level')}</div>
@@ -59,7 +59,7 @@ export const AccessList = ({
                     onChange({ type: 'public', access: newAccess })
                 }
             />
-             <ListItem
+            <ListItem
                 name={i18n.t('External access')}
                 target={SHARE_TARGET_EXTERNAL}
                 access={externalAccess}

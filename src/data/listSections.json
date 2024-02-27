@@ -5,217 +5,217 @@
             "resource": "dataElements",
             "label": "Data Elements",
             "filters": "programs,programStages,dataElementGroups,programIndicators",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "dataElementGroup",
             "resource": "dataElementGroups",
             "filters": "dataElementGroupSets",
             "label": "Data Element Groups",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "dataElementGroupSet",
             "resource": "dataElementGroupSets",
             "filters": "",
             "label": "Data Element Groups Sets",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "category",
             "resource": "categories",
             "filters": "categoryCombo",
             "label": "Categories",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "categoryOption",
             "resource": "categoryOptions",
             "filters": "categories,categoryOptionGroup",
             "label": "Category options",
-            "sharingData":true
+            "sharingData": true
         },
         {
             "key": "categoryCombo",
             "resource": "categoryCombos",
             "filters": "",
             "label": "Category Combo",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "categoryOptionGroup",
             "resource": "categoryOptionGroups",
             "filters": "categoryOptionGroupSets",
             "label": "Category Option Groups",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "categoryOptionGroupSet",
             "resource": "categoryOptionGroupSets",
             "filters": "",
             "label": "Category option group sets",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "indicator",
             "resource": "indicators",
             "filters": "indicatorGroups",
             "label": "Indicators",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "indicatorGroup",
             "resource": "indicatorGroups",
             "filters": "",
             "label": "Indicator groups",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "dataSet",
             "resource": "dataSets",
             "filters": "",
             "label": "Data sets",
-            "sharingData":true
+            "sharingData": true
         },
         {
             "key": "organisationUnitGroup",
             "resource": "organisationUnitGroups",
             "filters": "organisationUnitGroupSets",
             "label": "Organisation unit groups",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "organisationUnitGroupSet",
             "resource": "organisationUnitGroupSets",
             "filters": "",
             "label": "Organisation unit groups sets",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "optionSet",
             "resource": "optionSets",
             "filters": "",
             "label": "Option sets",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "userGroup",
             "resource": "userGroups",
             "filters": "",
             "label": "User Groups",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "userRole",
             "resource": "userRoles",
             "filters": "",
             "label": "User Roles",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "legendSet",
             "resource": "legendSets",
             "filters": "",
             "label": "Legend Sets",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "constant",
             "resource": "constants",
             "filters": "",
             "label": "Constants",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "trackedEntityAttribute",
             "resource": "trackedEntityAttributes",
             "filters": "programs",
             "label": "Tracker Attributes",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "program",
             "resource": "programs",
             "filters": "",
             "label": "Programs",
-            "sharingData":true
+            "sharingData": true
         },
         {
             "key": "programStage",
             "resource": "programStages",
             "filters": "programs",
             "label": "Program Stages",
-            "sharingData":true
+            "sharingData": true
         },
         {
             "key": "programIndicator",
             "resource": "programIndicators",
             "filters": "programs",
             "label": "Programs Indicators",
-            "sharingData":false
+            "sharingData": false
         },
         {
-            "key":"relationshipType",
-            "resource":"relationshipTypes",
+            "key": "relationshipType",
+            "resource": "relationshipTypes",
             "filters": "",
             "label": "Relationship type",
-            "sharingData":true
+            "sharingData": true
         },
         {
-            "key":"trackedEntityType",
-            "resource":"trackedEntityTypes",
+            "key": "trackedEntityType",
+            "resource": "trackedEntityTypes",
             "filters": "",
             "label": "Tracked entity type",
-            "sharingData":true
+            "sharingData": true
         },
         {
             "key": "dashboard",
             "resource": "dashboards",
             "filters": "",
             "label": "Dashboards",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "map",
             "resource": "maps",
             "filters": "",
             "label": "Maps",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "eventReport",
             "resource": "eventReports",
             "filters": "",
             "label": "Events Reports",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "eventChart",
             "resource": "eventCharts",
             "filters": "",
             "label": "Events charts",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "reportTable",
             "resource": "reportTables",
             "filters": "",
             "label": "Pivot Tables",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "chart",
             "resource": "charts",
             "filters": "",
             "label": "Agreggate chart",
-            "sharingData":false
+            "sharingData": false
         },
         {
             "key": "sqlView",
             "resource": "sqlViews",
             "filters": "",
             "label": "SQL Viev",
-            "sharingData":false
+            "sharingData": false
         }
     ]
 }

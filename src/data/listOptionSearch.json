@@ -1,114 +1,114 @@
 {
     "options": [
-      {
-        "code": "<No value>",
-        "disabled": true,
-        "tooltipText": "Select one filter option",
-        "value": ""
-      },
-      {
-        "code": "Data Set",
-        "disabled": false,
-        "filter": "?fields=dataSetElements",
-        "tooltipText": "Write dataset name here",
-        "value": "dataSets",
-        "expression":"$..id"
-      },
-      {
-        "code": "Program",
-        "disabled": false,
-        "filter": "?fields=programStages[programStageDataElements[dataElement]]",
-        "tooltipText": " Write program name here",
-        "value": "programs",
-        "expression":"$..id"
-      },
-      {
-        "code": "Program Stage",
-        "disabled": false,
-        "filter": "?fields=programStageDataElements[dataElement]",
-        "tooltipText": " Write programStage name here",
-        "value": "programStages",
-        "expression":"$..id"
-      },
-      {
-        "code": "DataElement Groups",
-        "disabled": false,
-        "filter": "?fields=id,name,dataElements[id]",
-        "tooltipText": "Write DataElement group name here",
-        "value": "dataElementGroups",
-        "expression":"$..id"
-      },
-      {
-        "code": "Program indicators",
-        "disabled": false,
-        "filter": "?fields=expression",
-        "tooltipText": "Write program indicator name here",
-        "value": "programIndicators",
-        "expression":"$..id"
-      },
-      {
-        "code": "User groups",
-        "disabled": false,
-        "filter": "?fields=*",
-        "tooltipText": "Write user group name here",
-        "value": "userGroups",
-        "expression":"$..id"
-      },
-      {
-        "code": "Users",
-        "disabled": false,
-        "filter": "?fields=*",
-        "tooltipText": "write user name here",
-        "value": "users",
-        "expression":"$..id"
-      },
-      {
-        "code": "OU group set",
-        "disabled": false,
-        "filter": "?fields=*",
-        "tooltipText": "Write name here",
-        "value": "organisationUnitGroupSets",
-        "expression":"$..id"
-      },
-      {
-        "code": "Indicator group",
-        "disabled": false,
-        "filter": "?fields=*",
-        "tooltipText": "Write indicator group here",
-        "value": "indicatorGroups",
-        "expression":"$..id"
-      },
-      {
-        "code": "Category option group set",
-        "disabled": false,
-        "filter": "?fields=*",
-        "tooltipText": "Write category option group set name here",
-        "value": "categoryOptionGroupSets",
-        "expression":"$..id"
-      },
-      {
-        "code": "Category",
-        "disabled": false,
-        "filter": "?fields=*",
-        "tooltipText": "Write category name here",
-        "value": "categories",
-        "expression":"$..id"
-      },
-      {
-        "code": "Category option group",
-        "disabled": false,
-        "filter": "?fields=*",
-        "tooltipText": "Write category option group name here",
-        "value": "categoryOptionGroup",
-        "expression":"$..id"
-      },
-      {
-        "code": "Category Combo",
-        "disabled": false,
-        "filter": "?fields=*",
-        "tooltipText": "Write category Combo name here",
-        "value": "categoryCombo",
-        "expression":"$..id"
-      }
+        {
+            "code": "<No value>",
+            "disabled": true,
+            "tooltipText": "Select one filter option",
+            "value": ""
+        },
+        {
+            "code": "Data Set",
+            "disabled": false,
+            "filter": "?fields=dataSetElements",
+            "tooltipText": "Write dataset name here",
+            "value": "dataSets",
+            "expression": "$..id"
+        },
+        {
+            "code": "Program",
+            "disabled": false,
+            "filter": "?fields=programStages[programStageDataElements[dataElement]]",
+            "tooltipText": " Write program name here",
+            "value": "programs",
+            "expression": "$..id"
+        },
+        {
+            "code": "Program Stage",
+            "disabled": false,
+            "filter": "?fields=programStageDataElements[dataElement]",
+            "tooltipText": " Write programStage name here",
+            "value": "programStages",
+            "expression": "$..id"
+        },
+        {
+            "code": "DataElement Groups",
+            "disabled": false,
+            "filter": "?fields=id,name,dataElements[id]",
+            "tooltipText": "Write DataElement group name here",
+            "value": "dataElementGroups",
+            "expression": "$..id"
+        },
+        {
+            "code": "Program indicators",
+            "disabled": false,
+            "filter": "?fields=expression",
+            "tooltipText": "Write program indicator name here",
+            "value": "programIndicators",
+            "expression": "$..id"
+        },
+        {
+            "code": "User groups",
+            "disabled": false,
+            "filter": "?fields=*",
+            "tooltipText": "Write user group name here",
+            "value": "userGroups",
+            "expression": "$..id"
+        },
+        {
+            "code": "Users",
+            "disabled": false,
+            "filter": "?fields=*",
+            "tooltipText": "write user name here",
+            "value": "users",
+            "expression": "$..id"
+        },
+        {
+            "code": "OU group set",
+            "disabled": false,
+            "filter": "?fields=*",
+            "tooltipText": "Write name here",
+            "value": "organisationUnitGroupSets",
+            "expression": "$..id"
+        },
+        {
+            "code": "Indicator group",
+            "disabled": false,
+            "filter": "?fields=*",
+            "tooltipText": "Write indicator group here",
+            "value": "indicatorGroups",
+            "expression": "$..id"
+        },
+        {
+            "code": "Category option group set",
+            "disabled": false,
+            "filter": "?fields=*",
+            "tooltipText": "Write category option group set name here",
+            "value": "categoryOptionGroupSets",
+            "expression": "$..id"
+        },
+        {
+            "code": "Category",
+            "disabled": false,
+            "filter": "?fields=*",
+            "tooltipText": "Write category name here",
+            "value": "categories",
+            "expression": "$..id"
+        },
+        {
+            "code": "Category option group",
+            "disabled": false,
+            "filter": "?fields=*",
+            "tooltipText": "Write category option group name here",
+            "value": "categoryOptionGroup",
+            "expression": "$..id"
+        },
+        {
+            "code": "Category Combo",
+            "disabled": false,
+            "filter": "?fields=*",
+            "tooltipText": "Write category Combo name here",
+            "value": "categoryCombo",
+            "expression": "$..id"
+        }
     ]
-  }
+}

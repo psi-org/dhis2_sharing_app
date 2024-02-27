@@ -53,8 +53,8 @@ export const TabbedContent = ({
                         <>
                             <AccessAdd onAdd={onAdd} />
                             <AccessList
-                               externalAccess={externalAccess}
-                               allowExternalAccess={allowExternalAccess}
+                                externalAccess={externalAccess}
+                                allowExternalAccess={allowExternalAccess}
                                 users={users}
                                 groups={groups}
                                 publicAccess={publicAccess}

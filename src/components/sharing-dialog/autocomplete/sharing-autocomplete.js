@@ -49,12 +49,12 @@ export const SharingAutocomplete = ({ selected, onSelection }) => {
         }
     }, [search])
     //list uoser and group selected 
-    useEffect(()=>{
-        if(data!==undefined) {
-            let list=data.search.userAccesses.map(u=>u.id).concat(data.search.userGroupAccesses.map(ug=>ug.id));
+    useEffect(() => {
+        if (data !== undefined) {
+            let list = data.search.userAccesses.map(u => u.id).concat(data.search.userGroupAccesses.map(ug => ug.id));
             setListSelected(list);
         }
-    },[data])
+    }, [data])
     // Concatenate all the results
     let results = []
     if (data?.search?.users) {
@@ -72,10 +72,10 @@ export const SharingAutocomplete = ({ selected, onSelection }) => {
         }))
         results = results.concat(mapped)
     }
-   //filters
-    if (search!==undefined){ 
-           results = results.filter((r)=>r.displayName.toUpperCase().includes(search.toUpperCase()))
-           results = results.filter((r)=>!listSelected.includes(r.id))
+    //filters
+    if (search !== undefined) {
+        results = results.filter((r) => r.displayName.toUpperCase().includes(search.toUpperCase()))
+        results = results.filter((r) => !listSelected.includes(r.id))
     }
     return (
         <Autocomplete

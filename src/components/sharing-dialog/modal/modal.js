@@ -12,9 +12,9 @@ import i18n from '../../../locales/index.js'
 export const Modal = ({ onClose, name, children }) => {
     const title = name
         ? i18n.t('Sharing and access: {{- objectName}}', {
-              objectName: name,
-              nsSeparator: '|',
-          })
+            objectName: name,
+            nsSeparator: '|',
+        })
         : i18n.t('Sharing and access')
 
     return (
