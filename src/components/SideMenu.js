@@ -38,7 +38,7 @@ export default ({ sections, currentSection, onChangeSection, onChangeSearchText 
                     aria-label="Vertical tabs example"
                     sx={{ borderRight: 1, borderColor: 'divider'}}
                 >
-                    {sections.map(s => (<Tab className={currentSection === s.key ? "sidebar-menuitem-selected" : "sidebar-menuitem"} onClick={() => onChangeSection(s.key, "")} label={s.label} iconPosition="start" icon={<FolderOpenIcon />} />))}        </Tabs>
+                    {sections.map(s => (<Tab key={s.key} className={currentSection === s.key ? "sidebar-menuitem-selected" : "sidebar-menuitem"} onClick={() => onChangeSection(s.key, "")} label={s.label} iconPosition="start" icon={<FolderOpenIcon />} />))}        </Tabs>
             </Box>
         </div>)
 };

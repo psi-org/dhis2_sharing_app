@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 //MAterial UI
 import TextField from '@mui/material/TextField';
@@ -14,166 +14,159 @@ import InitiallistOptionSearch from '../data/listOptionSearch.json'
 import SearchTextBox from './SearchTextBox';
 //
 //dhis2
-import i18n from '../locales/index.js' 
-import {get,post} from '../API/Dhis2.js';
+import i18n from '../locales/index.js'
+import { get, post } from '../API/Dhis2.js';
 
 const styles = {
-  container: {
-    display: 'grid',
-    gridTemplateColumns: '30% 30% 40%',
-  },
-  item: {
-    padding: 5
+    container: {
+        display: 'grid',
+        gridTemplateColumns: '30% 30% 40%',
+    },
+    item: {
+        padding: 5
 
-  },
-  titleColor: appTheme.palette.primary.settingOptions.title
+    },
+    titleColor: appTheme.palette.primary.settingOptions.title
 }
-class Filter extends React.Component {
 
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: 'name', valueSelected: {
+export const Filter = (props) => {
+    const [value, setValue] = useState('name')
+    const [valueSelected, setValueSelected] = useState({
         code: '<No value>',
         value: '',
         disabled: true,
         tooltipText: 'Select one filter option'
-      },
-      optionFilter:[]
+    })
+    const [optionFilter, setOptionFilter] = useState([])
+    const [listOptionSearch, setListOptionSearch] = useState([])
+
+    const handleChange = (event) => {
+        let vSelected = optionFilter.filter(val => val.value == event.target.value)
+        setValue(event.target.value)
+        if (vSelected.length >= 1)
+            setValueSelected(vSelected[0])
+        if (vSelected[0].disabled)
+            props.handleReturnFilterSelected({})
     };
-    this.handleChange = this.handleChange.bind(this);
-  }
 
-  handleChange(event) {
-    let vSelected = this.state.optionFilter.filter(val => val.value == event.target.value)
-    this.setState({ value:event.target.value })
-    if (vSelected.length >= 1)
-      this.setState({ valueSelected: vSelected[0] })
-    if (vSelected[0].disabled)
-      this.props.handleReturnFilterSelected({})
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: appTheme
-    };
-  }
-
-  renderOption(option) {
-    if(Object.keys(this.props.filterAvailable).length>1)
-    if (this.props.filterAvailable.filters.includes(option.value)) {
-      return (
-        <MenuItem 
-          value={option.value}
-          key={option.value}
-        >
-        {i18n.t(option.code)}
-        </MenuItem>
-      )
+    const getChildContext = () => {
+        return {
+            muiTheme: appTheme
+        };
     }
-  }
 
-  componentDidMount() {
-          // if listOptionSearch.json is empty, get it from dhis2
-          get('/dataStore/sharingsettingapp/listOptionSearch').then(r => {
-          if(r.httpStatusCode=== 404){
-            console.log("ya no ingresa aquí")
-            this.setState({ listOptionSearch: InitiallistOptionSearch,optionFilter: InitiallistOptionSearch.options });
-            post('/dataStore/sharingsettingapp/listOptionSearch', InitiallistOptionSearch).then(r => {console.log(r)})
-          }
-          else{
-            this.setState({ listOptionSearch: r,optionFilter: r.options });
-          }
-        }).catch(error => {
-          console.log(error);
+    const renderOption = (option) => {
+        if (Object.keys(props.filterAvailable).length > 1)
+            if (props.filterAvailable.filters.includes(option.value)) {
+                return (
+                    <MenuItem
+                        value={option.value}
+                        key={option.value}
+                    >
+                        {i18n.t(option.code)}
+                    </MenuItem>
+                )
+            }
+    }
+
+    const getResourceSelected = async (resource, urlAPI) => {
+
+        let result = {};
+        try {
+            let res = await get('/' + resource + urlAPI)
+            return res
+        }
+        catch (e) {
+            console.error('Could not access to API Resource')
+        }
+        return result
+    }
+
+    const searchOption = async (valuetoSearch) => {
+        const urlAPI = "?fields=id,name,displayName~rename(label)&filter=displayName:like:" + valuetoSearch
+        return getResourceSelected(valueSelected.value, urlAPI).then(res => {
+            return res[valueSelected.value]
         })
-  }
-
-  async getResourceSelected(resource, urlAPI) {
-
-    let result = {};
-    try {
-      let res = await get('/' + resource + urlAPI);
-      //if (res.hasOwnProperty(resource)) {
-      return res;
     }
-    catch (e) {
-      console.error('Could not access to API Resource');
+
+    const filterOption = async (filter, resource, id) => {
+        const urlAPI = "/" + id + filter
+        return getResourceSelected(resource, urlAPI).then(res => {
+            return res
+        })
     }
-    return result;
-  }
-  async searchOption(valuetoSearch) {
-    const urlAPI = "?fields=id,name,displayName~rename(label)&filter=displayName:like:" + valuetoSearch
-    return this.getResourceSelected(this.state.valueSelected.value, urlAPI).then(res => {
-      return res[this.state.valueSelected.value];
-    })
-  }
-  async filterOption(filter, resource, id) {
-    const urlAPI = "/" + id + filter;
-    return this.getResourceSelected(resource, urlAPI).then(res => {
-      return res;
-    })
-  }
 
+    const selectOption = (valueSelected) => {
+        filterOption(valueSelected.filter, valueSelected.value, valueSelected.id).then(rawData => {
+            props.handleReturnFilterSelected(rawData, valueSelected)
+        })
+    }
+    const handleChangeValue = (event) => {
+        props.handlefilterTextChange(event.target.value);
+    }
 
-  selectOption(valueSelected) {
-    this.filterOption(this.state.valueSelected.filter, this.state.valueSelected.value, valueSelected.id).then(rawData => {
-      this.props.handleReturnFilterSelected(rawData,this.state.valueSelected)
-    })
-  }
-  handleChangeValue(event) {
-    this.props.handlefilterTextChange(event.target.value);
-  }
-  render() {
+    useEffect(() => {
+        // if listOptionSearch.json is empty, get it from dhis2
+        get('/dataStore/sharingsettingapp/listOptionSearch').then(r => {
+            if (r.httpStatusCode === 404) {
+                console.log("ya no ingresa aquí")
+                setListOptionSearch(InitiallistOptionSearch)
+                setOptionFilter(InitiallistOptionSearch.options)
+                post('/dataStore/sharingsettingapp/listOptionSearch', InitiallistOptionSearch).then(r => { console.log(r) })
+            }
+            else {
+                setListOptionSearch(r)
+                setOptionFilter(r.options)
+            }
+        }).catch(error => {
+            console.log(error);
+        })
+    }, [])
+
     return (
-      <section style={styles.container}>
-        <div style={styles.item}>
-          <TextField
-            fullWidth={true}
-            label={i18n.t(' Search by name')}
-            variant="standard"
-            onChange={this.handleChangeValue.bind(this)}
-          />
-        </div>
-        <div style={styles.item}>
-        <Box sx={{ minWidth: 120 }}>
-          <FormControl variant="standard" fullWidth>
-            <InputLabel id="selectfilter">
-                {i18n.t('Filter objects related with:')}
-            </InputLabel>
-            <SelectField
-              labelId="selectfilter"
-              defaultValue={this.props.filterAvailable.filters === ""||this.props.filterAvailable.filters===undefined?i18n.t("<No value>"):i18n.t(this.props.filterAvailable.filters.split(',')[0])}
-              value={this.state.value}
-              onChange={this.handleChange}              
-              disabled={this.props.filterAvailable.filters == "" ? true : false}
-              inputProps={{
-                name: i18n.t('Filter objects related with:'),
-                id: 'uncontrolled-native',
-              }}
-            >
-              {this.state.optionFilter.map(this.renderOption, this)}
-            </SelectField>
-              
-          </FormControl>
-        </Box>
-        </div>
-        <div style={styles.item}>
-          <SearchTextBox
-            source={this.searchOption.bind(this)}
-            title={i18n.t(this.state.valueSelected.tooltipText)}
-            callBackSelected={this.selectOption.bind(this)}
-            color={styles.titleColor}
-            showValueSelected={true}
-            disabled={this.state.valueSelected.disabled}
-          />
-
-        </div>
-
-      </section>
-    );
-  }
+        <section style={styles.container}>
+            <div style={styles.item}>
+                <TextField
+                    fullWidth={true}
+                    label={i18n.t(' Search by name')}
+                    variant="standard"
+                    onChange={handleChangeValue}
+                />
+            </div>
+            <div style={styles.item}>
+                <Box sx={{ minWidth: 120 }}>
+                    <FormControl variant="standard" fullWidth>
+                        <InputLabel id="selectfilter">
+                            {i18n.t('Filter objects related with:')}
+                        </InputLabel>
+                        <SelectField
+                            labelId="selectfilter"
+                            defaultValue={props.filterAvailable.filters === "" || props.filterAvailable.filters === undefined ? i18n.t("<No value>") : i18n.t(props.filterAvailable.filters.split(',')[0])}
+                            value={value}
+                            onChange={handleChange}
+                            disabled={props.filterAvailable.filters == "" ? true : false}
+                            inputProps={{
+                                name: i18n.t('Filter objects related with:'),
+                                id: 'uncontrolled-native',
+                            }}
+                        >
+                            {optionFilter.map(renderOption, this)}
+                        </SelectField>
+                    </FormControl>
+                </Box>
+            </div>
+            <div style={styles.item}>
+                <SearchTextBox
+                    source={searchOption}
+                    title={i18n.t(valueSelected.tooltipText)}
+                    callBackSelected={selectOption}
+                    color={styles.titleColor}
+                    showValueSelected={true}
+                    disabled={valueSelected.disabled}
+                />
+            </div>
+        </section>
+    )
 }
 
 export default Filter

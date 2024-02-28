@@ -1,43 +1,42 @@
+import React, { useState, useEffect } from 'react';
 
-import React from 'react';
 import Button from '@mui/material/Button';
 import None from '@mui/icons-material/NotInterested';
 import ActionDone from '@mui/icons-material/Done';
 import ActionDoneAll from '@mui/icons-material/DoneAll';
 
-class SpecialButton extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: 0};
-      }
-      handleClickButton(){
-          switch(this.state.value){
+const SpecialButton = (props) => {
+    const [value, setValue] = useState(0)
+
+    const handleClickButton = () => {
+        switch (value) {
             case 0:
-                this.setState({value:1})
-                this.props.callBackHandleClick({"id":this.props.id,"value":1,"type":this.props.type});
+                setValue(1)
+                props.callBackHandleClick({ "id": props.id, "value": 1, "type": props.type });
 
                 break;
             case 1:
-                this.setState({value:2})
-                this.props.callBackHandleClick({"id":this.props.id,"value":2,"type":this.props.type});
+                setValue(2)
+                props.callBackHandleClick({ "id": props.id, "value": 2, "type": props.type });
 
                 break;
             case 2:
-                this.setState({value:0})
-                this.props.callBackHandleClick({"id":this.props.id,"value":0,"type":this.props.type});
+                setValue(0)
+                props.callBackHandleClick({ "id": props.id, "value": 0, "type": props.type });
                 break;
-          }
-      }
-   componentDidMount(){
-    this.setState({value:this.props.defaultValue})
-   }
-      render() {
-        return (
-            <div title={this.props.enabled?"":this.props.title}>
-                <Button onClick={()=>this.handleClickButton()} icon={this.state.value==0? <None color={this.props.color}/>: this.state.value==1?<ActionDone color={this.props.color}/>: <ActionDoneAll color={this.props.color}/>} disabled={!this.props.enabled} />
-            </div>
-        )
+        }
     }
+
+    useEffect(() => {
+        setValue(props.defaultValue)
+    }, [])
+
+
+    return (
+        <div title={props.enabled ? "" : props.title}>
+            <Button onClick={() => handleClickButton()} icon={value == 0 ? <None color={props.color} /> : value == 1 ? <ActionDone color={props.color} /> : <ActionDoneAll color={props.color} />} disabled={!props.enabled} />
+        </div>
+    )
 }
-  
-  export default SpecialButton
+
+export default SpecialButton

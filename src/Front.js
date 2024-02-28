@@ -46,7 +46,6 @@ export const AppFront = () => {
     }
 
     const setResourceSelected = (keySelected) => {
-
         let resourceSelected = ListSection.sections.find(function (resource) {
             return resource.label === keySelected;
         });
@@ -78,7 +77,8 @@ export const AppFront = () => {
                 setListSection(InitialListSection)
                 setSectionToRender(InitialListSection.sections[0].label)
                 setInformationResource(InitialListSection.sections[0])
-                post('/dataStore/sharingsettingapp/listSections', InitialListSection).then(r => { console.log(r) })
+                post('/dataStore/sharingsettingapp/listSections', InitialListSection)
+                    .then(r => { console.log(r) })
             }
             else {
                 setListSection(r)

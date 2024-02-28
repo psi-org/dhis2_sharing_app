@@ -1,12 +1,9 @@
 
-import React from 'react';
-import List from '@mui/material/List';
-import ListItemText from '@mui/material/List';
+import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import appTheme from '../theme';
 import Autocomplete from '@mui/material/Autocomplete';
 
-import Paper from '@mui/material/Paper';
 const styles = {
     content: {
         padding: '5%',
@@ -21,84 +18,54 @@ const styles = {
     hideList: {
         display: 'none'
     }
-
-
-
-
 }
-class SearchTextBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { value: [], textValue: '' }
-    };
 
-    handleChangeValue(event,valueSelected) {
-        this.setState({ textValue: event.target.value });
+export const SearchTextBox = (props) => {
+    const [value, setValue] = useState([])
+    const [textValue, setTextValue] = useState('')
+
+    var keycount = 0
+
+    const handleChangeValue = (event, valueSelected) => {
+        setTextValue(event.target.value)
+
         if (event.target.value == "") {
-            this.setState({ value: [] });
-        }
-        else {
-            this.props.source(event.target.value).then(res => {
-                this.setState({ value: res });
+            setValue([])
+        } else {
+            props.source(event.target.value).then(res => {
+                setValue(res)
             })
         }
     }
-    handleSelectOption(e,value,reason) {
-       if(reason==="selectOption"){
-            this.props.callBackSelected(value);
-            this.setState({ value: [] });
-            if (this.props.showValueSelected == false)
-                this.setState({ textValue: '' });
+
+    const handleSelectOption = (e, value, reason) => {
+        if (reason === "selectOption") {
+            props.callBackSelected(value)
+            setValue([])
+            if (props.showValueSelected == false)
+                setTextValue('')
             else
-                this.setState({ textValue: value.label });
-       }
-
+                setTextValue(value.label)
+        }
     }
 
-    render() {
-        var keycount = 0;
-        return (
-            <div style={{ position: "relative" }} >
-                <Autocomplete
-                        disablePortal
-                        id="combo-box-demo"
-                        options={this.state.value}
-                        sx={{ width: 400 }}     
-                        onInputChange={(e,value) =>this.handleChangeValue(e,value)}                       
-                        onChange={(e,value,reason) => this.handleSelectOption(e,value,reason)}                   
-                        renderInput={(params) => <TextField {...params} 
-                        label={this.props.disabled ? "Select some option" : this.props.title}
-                        variant="standard"
-                        disabled={this.props.disabled}
-                        
-                        />}
-                    />
-
-                {/* <TextField
-                    id={"valueSearch"}
-                    fullWidth={true}
-                    multiLine={true}
-                    onChange={this.handleChangeValue.bind(this)}
-                    label={this.props.disabled ? "Select some option" : this.props.title}
+    return (
+        <div style={{ position: "relative" }} >
+            <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={value}
+                sx={{ width: 400 }}
+                onInputChange={(e, value) => handleChangeValue(e, value)}
+                onChange={(e, value, reason) => handleSelectOption(e, value, reason)}
+                renderInput={(params) => <TextField {...params}
+                    label={props.disabled ? "Select some option" : props.title}
                     variant="standard"
-                    disabled={this.props.disabled}
-                />
-                <div style={this.state.value.length == 0 ? styles.hideList : styles.contentList}>
-                    <Paper>
-                        <List>
-                            {this.state.value.map((val) => {
-                                keycount++
-                                console.log(val)
-                                return (<ListItemText onClick={() => this.handleSelectOption(val)} key={keycount} primary={val.displayName} />)
-                            })}
-                        </List>
-                    </Paper>
-                </div> */}
-
-            </div>
-        )
-    }
+                    disabled={props.disabled}
+                />}
+            />
+        </div>
+    )
 }
-
 
 export default SearchTextBox

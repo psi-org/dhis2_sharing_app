@@ -546,9 +546,11 @@ export const BulkMode = (props) => {
         }
     }
 
-    useEffect(async () => {
-        let usersAndGroups = await getUsersandGroups()
-        setUsersAndgroups(usersAndGroups)
+    useEffect(() => {
+        (async () => {
+            let usersAndGroups = await getUsersandGroups()
+            setUsersAndgroups(usersAndGroups)
+        })();
     }, [])
 
     useEffect(() => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import appTheme from '../theme';
 import IndividualMode from './IndividualMode';
 import BulkMode from './BulkMode';
@@ -30,311 +30,310 @@ import jsonpath from 'jsonpath';
 require('../scss/app.scss');
 
 const styles = {
-  header: {
-    fontSize: 24,
-    fontWeight: 300,
-    color: appTheme.palette.primary.textColor,
-    padding: '24px 0 12px 16px',
-  },
-  chips: {
-    color: appTheme.palette.primary.canvasColor,
-    avatarColor: appTheme.palette.primary.canvasColor,
-    iconColor: appTheme.palette.primary.settingOptions.icon
-  }
+    header: {
+        fontSize: 24,
+        fontWeight: 300,
+        color: appTheme.palette.primary.textColor,
+        padding: '24px 0 12px 16px',
+    },
+    chips: {
+        color: appTheme.palette.primary.canvasColor,
+        avatarColor: appTheme.palette.primary.canvasColor,
+        iconColor: appTheme.palette.primary.settingOptions.icon
+    }
 };
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+const TabPanel = (props) => {
+    const { children, value, index, ...other } = props;
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    <Typography component={'span'} variant={'body2'}>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
 }
 
+export const Content = (props) => {
 
-class Content extends React.Component {
+    const [resource, setResource] = useState({})
+    const [authorization, setAuthorization] = useState(true)
+    const [searchByName, setSearchByName] = useState("")
+    const [filterids, setFilterids] = useState("")
+    const [filterString, setFilterString] = useState("")
+    const [open, setOpen] = useState(false)
+    const [mode, setMode] = useState("view")
+    const [listObject, setListObject] = useState({})
+    const [pager, setPager] = useState({ page: 0, pageCount: 0, pageSize: 0, total: 0 })
+    const [originSearch, setOriginSearch] = useState(false)
 
-  constructor(props) {
-    super(props);
-    this.state = { resource: {}, authorization: true, searchByName: "", filterids: "", filterString: "", open: false, mode: "view", listObject: {}, pager: { page: 0, pageCount: 0, pageSize: 0, total: 0 }, originSearch: false }
-  }
-
-  //API Query
-  //query resource Selected
-  async getInformationResourceSelected(resource) {
-    let result = {};
-    try {
-      let res = await get("/schemas/" + resource.key);
-      return res;
-    }
-    catch (e) {
-      console.error('Could not access to API Resource');
-    }
-    return result;
-  }
-  //query resource Selected
-  async getResourceSelected(urlAPI, page = 1, searchByName = "") {
-    let result = {};
-    let res = {};
-    try {
-      if (page == "all") {
-        res = await get('/' + urlAPI + "?fields=id,code,name,displayName,externalAccess,publicAccess,userGroupAccesses[id,access,displayName~rename(name),userGroupUid],userAccesses[id,access,displayName~rename(name),userUid]&paging=false&" + (searchByName === "" ? "" : "&filter=identifiable:token:" + searchByName) + (this.state.filterids === "" ? "" : "&filter=id:in:" + this.state.filterids));
-      } else {
-        res = await get('/' + urlAPI + "?fields=id,code,name,displayName,externalAccess,publicAccess,userGroupAccesses[id,access,displayName~rename(name),userGroupUid],userAccesses[id,access,displayName~rename(name),userUid]&page=" + page + (searchByName === "" ? "" : "&filter=identifiable:token:" + searchByName) + (this.state.filterids === "" ? "" : "&filter=id:in:" + this.state.filterids));
-      }
-      if (res.hasOwnProperty(urlAPI)) {
-        return res;
-      }
-    }
-    catch (e) {
-      console.error('Could not access to API Resource', e);
-    }
-    return result;
-  }
-  //validate if user has the authority required to access sharing setting
-  checkAuthority(resource) {
-    // if listsections.json is empty, get it from dhis2
-    get('/schemas/' + resource).then(r => {
-      let authorities = r.authorities.find(a => a.type === 'CREATE_PUBLIC').authorities;
-      get('/me').then(me => {
-        let foundSuperUser = me.authorities.indexOf("ALL");
-        if (foundSuperUser === -1) {
-          let _authorities = authorities.filter(au => me.authorities.includes(au))
-          if (_authorities.length === authorities.length) {
-            this.setState({ authorization: true })
-          } else {
-            this.setState({ authorization: false })
-          }
+    //API Query
+    //query resource Selected
+    const getInformationResourceSelected = async (resource) => {
+        let result = {};
+        try {
+            let res = await get("/schemas/" + resource.key)
+            return res
         }
-        else
-          this.setState({ authorization: true })
-      })
-    }).catch(error => {
-      console.log(error);
-    })
-  }
-
-  // life cycle
-  componentDidUpdate(prevProps, prevState) {
-    try {
-      if (this.props.title != prevProps.title && this.props.informationResource.resource != undefined) {
-        //validate authorization
-        this.checkAuthority(this.props.informationResource.key)
-        //reset count of pages
-        if (this.props.title != prevProps.title) {
-          this.setState({ originSearch: true })
+        catch (e) {
+            console.error('Could not access to API Resource')
         }
-        this.getResourceSelected(this.props.informationResource.resource).then(res => {
-          let dataResult = {}
-          for (let g of res[this.props.informationResource.resource]) {
-            dataResult[g.id] = g;
-          }
-          this.setState({
-            listObject: dataResult,
-            pager: res.pager
-          });
+        return result
+    }
+
+    //query resource Selected
+    const getResourceSelected = async (urlAPI, page = 1, searchByName = "") => {
+        let result = {}
+        let res = {}
+        try {
+            if (page == "all") {
+                res = await get('/' + urlAPI + "?fields=id,code,name,displayName,externalAccess,publicAccess,userGroupAccesses[id,access,displayName~rename(name),userGroupUid],userAccesses[id,access,displayName~rename(name),userUid]&paging=false&" + (searchByName === "" ? "" : "&filter=identifiable:token:" + searchByName) + (filterids === "" ? "" : "&filter=id:in:" + filterids))
+            } else {
+                res = await get('/' + urlAPI + "?fields=id,code,name,displayName,externalAccess,publicAccess,userGroupAccesses[id,access,displayName~rename(name),userGroupUid],userAccesses[id,access,displayName~rename(name),userUid]&page=" + page + (searchByName === "" ? "" : "&filter=identifiable:token:" + searchByName) + (filterids === "" ? "" : "&filter=id:in:" + filterids))
+            }
+            if (res.hasOwnProperty(urlAPI)) {
+                return res
+            }
+        }
+        catch (e) {
+            console.error('Could not access to API Resource', e)
+        }
+        return result;
+    }
+
+    //validate if user has the authority required to access sharing setting
+    const checkAuthority = (resource) => {
+        // if listsections.json is empty, get it from dhis2
+        get('/schemas/' + resource).then(r => {
+            let authorities = r.authorities.find(a => a.type === 'CREATE_PUBLIC').authorities
+            get('/me').then(me => {
+                let foundSuperUser = me.authorities.indexOf("ALL")
+                if (foundSuperUser === -1) {
+                    let _authorities = authorities.filter(au => me.authorities.includes(au))
+                    if (_authorities.length === authorities.length) {
+                        setAuthorization(true)
+                    } else {
+                        setAuthorization(false)
+                    }
+                } else {
+                    setAuthorization(true)
+                }
+            })
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
+    //tabs handle
+    const handleChangeTabs = (textSearch, value, page = 1) => {
+        if (typeof (textSearch) !== "string") {
+            textSearch = ""
+        }
+
+        //refresh List
+        getResourceSelected(props.informationResource.resource, page, textSearch).then(res => {
+            let dataResult = {}
+            for (let g of res[props.informationResource.resource]) {
+                dataResult[g.id] = g
+            }
+            setListObject(dataResult)
+            setPager(res.pager)
+
         });
 
-        ///get information resource
-        this.getInformationResourceSelected(this.props.informationResource).then(res => {
-          this.setState({ resource: res });
-        })
-      }
-    } catch (err) {
-      console.log(err);
+        // update state
+        setMode(value)
+        props.disableSlide(value)
+    };
+
+    //tabs handle
+    const reloadData = (page = 1) => {
+        //refresh List
+        getResourceSelected(props.informationResource.resource, page).then(res => {
+            let dataResult = {}
+
+            for (let g of res[props.informationResource.resource]) {
+                dataResult[g.id] = g
+            }
+
+            setListObject(dataResult)
+            setOriginSearch("bulklist")
+        });
+    };
+
+    //handle filter
+    //handler
+    const handlefilterTextChange = (textSearch) => {
+        setSearchByName(textSearch)
+        setOriginSearch("search")
+        handleChangeTabs(textSearch, mode)
     }
 
-  }
-
-  //tabs handle
-  handleChangeTabs(textSearch, value, page = 1) {
-
-    if (typeof (textSearch) !== "string") {
-      textSearch = "";
+    const getFilterSelected = (filterValue, filter) => {
+        if (Object.keys(filterValue).length != 0) {
+            let arrid = jsonpath.query(filterValue, filter.expression)
+            setOriginSearch("search")
+            setFilterString(JSON.stringify(filterValue))
+            setFilterids(JSON.stringify(arrid).replace(/['"]+/g, ''))
+            handleChangeTabs(undefined, mode)
+        } else {
+            setFilterString("")
+        }
     }
-    //refresh List
-    this.getResourceSelected(this.props.informationResource.resource, page, textSearch).then(res => {
-      let dataResult = {}
-      for (let g of res[this.props.informationResource.resource]) {
-        dataResult[g.id] = g;
-      }
-      this.setState({
-        listObject: dataResult,
-        pager: res.pager
-      });
-    });
-    // update state
-    this.setState({
-      mode: value,
-    });
 
-    this.props.disableSlide(value)
-  };
-  //tabs handle
-  reloadData(page = 1) {
-    //refresh List
-    this.getResourceSelected(this.props.informationResource.resource, page).then(res => {
-      let dataResult = {}
-      for (let g of res[this.props.informationResource.resource]) {
-        dataResult[g.id] = g;
-      }
-      this.setState({
-        listObject: dataResult,
-        originSearch: "bulklist"
-      });
-    });
+    //handle Modal
+    const handleOpen = () => {
+        setOpen(true)
+    };
 
-  };
+    const handleClose = () => {
+        setOpen(false)
+    };
 
-  //handle filter
-  //handler
-  handlefilterTextChange(textSearch) {
-    this.setState({ searchByName: textSearch, originSearch: "search" });
-    this.handleChangeTabs(textSearch, this.state.mode)
-  }
-  getFilterSelected(filterValue, filter) {
-    if (Object.keys(filterValue).length != 0) {
-      let arrid = jsonpath.query(filterValue, filter.expression);
-      this.setState({ originSearch: "search", filterString: JSON.stringify(filterValue), filterids: JSON.stringify(arrid).replace(/['"]+/g, '') })
-      this.handleChangeTabs(undefined, this.state.mode);
-    }
-    else
-      this.setState({ filterString: "" })
-  }
-  //handle Modal
+    // life cycle
+    useEffect(() => {
+        try {
+            if (props.informationResource.resource != undefined) {
+                //validate authorization
+                checkAuthority(props.informationResource.key)
 
-  handleOpen() {
-    this.setState({ open: true });
-  };
+                //reset count of pages
+                setOriginSearch(true)
 
-  handleClose() {
-    this.setState({ open: false });
-  };
+                getResourceSelected(props.informationResource.resource).then(res => {
+                    let dataResult = {}
+                    for (let g of res[props.informationResource.resource]) {
+                        dataResult[g.id] = g;
+                    }
+                    setListObject(dataResult)
+                    setPager(res.pager)
+                })
 
-  render() {
+                ///get information resource
+                getInformationResourceSelected(props.informationResource).then(res => {
+                    setResource(res)
+                })
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }, [props.informationResource])
+
     return (
-
-      <div className="app">
-        <div className='content-area'>
-          <div style={styles.header}>
-            Sharing Setting for:  <span style={{ "fontWeight": "bold" }}>{i18n.t(this.props.title)}</span>
-          </div>
-          {!this.state.authorization && <div><Alert severity="error">{i18n.t("You do not have all the authorizations required to " + this.props.title)}</Alert></div>}
-          <div style={{ textAlign: 'right' }}>
-            <IconButton onClick={this.handleOpen.bind(this)}><Help /> </IconButton>
-            <Dialog
-              open={this.state.open}
-              onClose={this.handleClose.bind(this)}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">
-                {i18n.t("Conventions")}
-              </DialogTitle>
-              <DialogContent>
-                <div>
-                  <div>{i18n.t("METADATA - privileges related to access")}</div>
-                  <Chip backgroundColor={styles.chips.color}
-                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><None /></Avatar>}
-                    label={i18n.t("No Access")}
-                  />
-                  <Chip backgroundColor={styles.chips.color}
-                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><ActionDone /></Avatar>}
-                    label={i18n.t("Can find and view")}
-                  />
-                  <Chip backgroundColor={styles.chips.color}
-                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><ActionDoneAll /></Avatar>}
-                    label={i18n.t("Can find, view and edit")}
-                  />
-
+        <div className="app">
+            <div className='content-area'>
+                <div style={styles.header}>
+                    Sharing Setting for:  <span style={{ "fontWeight": "bold" }}>{i18n.t(props.title)}</span>
                 </div>
-                <div>
-                  <div>{i18n.t("DATA - Privileges related to data registration and access")}</div>
-                  <Chip backgroundColor={styles.chips.color}
-                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><None /></Avatar>}
-                    label={i18n.t("No Access")}
-                  />
-                  <Chip backgroundColor={styles.chips.color}
-                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><ActionDone /></Avatar>}
-                    label={i18n.t("Can register")}
-                  />
-                  <Chip backgroundColor={styles.chips.color}
-                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><ActionDoneAll /></Avatar>}
-                    label={i18n.t("Can find, view and edit")}
-                  />
+                {!authorization && <div><Alert severity="error">{i18n.t("You do not have all the authorizations required to " + props.title)}</Alert></div>}
+                <div style={{ textAlign: 'right' }}>
+                    <IconButton onClick={handleOpen}><Help /> </IconButton>
+                    <Dialog
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">
+                            {i18n.t("Conventions")}
+                        </DialogTitle>
+                        <DialogContent>
+                            <div>
+                                <div>{i18n.t("METADATA - privileges related to access")}</div>
+                                <Chip backgroundColor={styles.chips.color}
+                                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><None /></Avatar>}
+                                    label={i18n.t("No Access")}
+                                />
+                                <Chip backgroundColor={styles.chips.color}
+                                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><ActionDone /></Avatar>}
+                                    label={i18n.t("Can find and view")}
+                                />
+                                <Chip backgroundColor={styles.chips.color}
+                                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><ActionDoneAll /></Avatar>}
+                                    label={i18n.t("Can find, view and edit")}
+                                />
 
+                            </div>
+                            <div>
+                                <div>{i18n.t("DATA - Privileges related to data registration and access")}</div>
+                                <Chip backgroundColor={styles.chips.color}
+                                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><None /></Avatar>}
+                                    label={i18n.t("No Access")}
+                                />
+                                <Chip backgroundColor={styles.chips.color}
+                                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><ActionDone /></Avatar>}
+                                    label={i18n.t("Can register")}
+                                />
+                                <Chip backgroundColor={styles.chips.color}
+                                    avatar={<Avatar backgroundColor={styles.chips.avatarColor} color={styles.chips.iconColor}><ActionDoneAll /></Avatar>}
+                                    label={i18n.t("Can find, view and edit")}
+                                />
+
+                            </div>
+
+                        </DialogContent>
+                        <DialogActions>
+
+                            <Button onClick={handleClose} autoFocus>
+                                {i18n.t("Close")}
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </div>
+                {authorization && <><Filter
+                    handlefilterTextChange={handlefilterTextChange}
+                    handleReturnFilterSelected={getFilterSelected}
+                    filterAvailable={props.informationResource}
+                />
+                    <Tabs
+                        value={mode}
+                        onChange={handleChangeTabs}
+                    >
+                        <Tab label={i18n.t("Individual mode")} value="view" />
+                        <Tab label={i18n.t("Bulk mode")} value="edit" />
+                    </Tabs>
+                    <Box>
+                        <TabPanel value={mode} index={"view"}>
+                            <IndividualMode
+                                resource={props.informationResource}
+                                Enabledchecked={false}
+                                listObject={listObject}
+                                pager={pager}
+                                originSearch={originSearch}
+                                handleChangeTabs={handleChangeTabs}
+                                searchByName={searchByName}
+                                filterString={filterString}
+                                informationResource={resource}
 
-              </DialogContent>
-              <DialogActions>
+                            />
+                        </TabPanel>
+                        <TabPanel value={mode} index={"edit"}>
+                            <BulkMode
+                                resource={props.informationResource}
+                                listObject={listObject}
+                                pager={pager}
+                                originSearch={originSearch}
+                                searchByName={searchByName}
+                                filterString={filterString}
+                                handleChangeTabs={handleChangeTabs}
+                                reloadData={reloadData}
+                                informationResource={resource}
+                            />
+                        </TabPanel>
 
-                <Button onClick={this.handleClose.bind(this)} autoFocus>
-                  {i18n.t("Close")}
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </div>
-          {this.state.authorization&&<><Filter
-            handlefilterTextChange={this.handlefilterTextChange.bind(this)}
-            handleReturnFilterSelected={this.getFilterSelected.bind(this)}
-            filterAvailable={this.props.informationResource}
-          />
-          <Tabs
-            value={this.state.mode}
-            onChange={this.handleChangeTabs.bind(this)}
-          >
-            <Tab label={i18n.t("Individual mode")} value="view" />
-            <Tab label={i18n.t("Bulk mode")} value="edit" />
-          </Tabs>
-          <Box>
-            <TabPanel value={this.state.mode} index={"view"}>
-              <IndividualMode
-                resource={this.props.informationResource}
-                Enabledchecked={false}
-                listObject={this.state.listObject}
-                pager={this.state.pager}
-                originSearch={this.state.originSearch}
-                handleChangeTabs={this.handleChangeTabs.bind(this)}
-                searchByName={this.state.searchByName}
-                filterString={this.state.filterString}
-                informationResource={this.state.resource}
-
-              />
-            </TabPanel>
-            <TabPanel value={this.state.mode} index={"edit"}>
-              <BulkMode
-                resource={this.props.informationResource}
-                listObject={this.state.listObject}
-                pager={this.state.pager}
-                originSearch={this.state.originSearch}
-                searchByName={this.state.searchByName}
-                filterString={this.state.filterString}
-                handleChangeTabs={this.handleChangeTabs.bind(this)}
-                reloadData={this.reloadData.bind(this)}
-                informationResource={this.state.resource}
-              />
-            </TabPanel>
-
-          </Box></>}
+                    </Box></>}
+            </div>
         </div>
-      </div>
-
-    );
-
-  }
-
-};
+    )
+}
 
 export default Content

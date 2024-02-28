@@ -1,6 +1,5 @@
 const DHIS2_URL = window.location.origin.split(":")[2] === '3000' ? "http://localhost:8080/api" : window.location.href.split("/apps")[0]
 
-
 export function post(url, body) {
     return fetch(DHIS2_URL + url, {
         method: "POST",
