@@ -17,7 +17,6 @@ import TableRow from '@mui/material/TableRow';
 import appTheme from '../theme';
 //dhis2
 import i18n from '../locales/index.js'
-import { post } from '../API/Dhis2.js';
 import { useDataMutation, useDataQuery } from '@dhis2/app-runtime'
 import { SharingDialog } from './sharing-dialog';
 
@@ -81,6 +80,16 @@ const queryUserGroups = {
     }
 };
 
+const sharingsMutation = {
+    resource: 'sharing',
+    type: 'update',
+    params: ({ type, id }) => ({
+        type,
+        id
+    }),
+    data: ({ data }) => data
+};
+
 export const IndividualMode = (props) => {
 
     const [openModal, setOpenModal] = useState(false)
@@ -88,24 +97,12 @@ export const IndividualMode = (props) => {
     const [messajeError, setMessajeError] = useState("mensaje de error")
     const [rowsPerPage, setRowsPerPage] = useState(50)
     const [page, setPage] = useState(1)
-    const [rowlength, setRowlength] = useState(0)
     const [usersAndgroups, setUsersAndgroups] = useState({})
 
-    const { refetch: usersRefetch } = useDataQuery(queryUsers, { lazy: true });
-    const { refetch: userGroupsRefetch } = useDataQuery(queryUserGroups, { lazy: true });
+    const { refetch: usersRefetch } = useDataQuery(queryUsers, { lazy: true })
+    const { refetch: userGroupsRefetch } = useDataQuery(queryUserGroups, { lazy: true })
 
-    //query resource Selected
-    const setResourceSelected = async (urlAPI, Payload) => {
-        try {
-            let res = await post(urlAPI, Payload)
-            //update change on listview
-            props.handleChangeTabs(undefined, "view", 1)
-            return res
-        }
-        catch (e) {
-            return e
-        }
-    }
+    const [mutateSharings] = useDataMutation(sharingsMutation, { lazy: true })
 
     //query resource Selected
     const getUsersandGroups = async () => {
@@ -142,12 +139,18 @@ export const IndividualMode = (props) => {
 
         }
         setUserAndGroupsSelected(valToSave.object)
-        setResourceSelected("/sharing?type=" + props.resource.key + "&id=" + userAndGroupsSelected.id, valToSave)
-            .then(res => {
-                if (res.status != "OK")
-                    setMessajeError(res.message)
-                handleOpen(valToSave.object)
-            })
+
+        mutateSharings({
+            data: valToSave,
+            type: props.resource.key,
+            id: userAndGroupsSelected.id
+        }).then((res) => {
+            if (res.status != "OK")
+                setMessajeError(res.message)
+            handleOpen(valToSave.object)
+            props.handleChangeTabs(undefined, "view", 1)
+        })
+
     }
 
     const handleOpen = (data) => {
@@ -302,7 +305,6 @@ export const IndividualMode = (props) => {
             let usersAndgroupsRes = await getUsersandGroups()
             setUsersAndgroups(usersAndgroupsRes);
         })();
-        console.log(props.resource)
     }, [])
 
     return (

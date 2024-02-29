@@ -15,7 +15,9 @@ import SearchTextBox from './SearchTextBox';
 //
 //dhis2
 import i18n from '../locales/index.js'
+import { useDataMutation, useDataQuery } from '@dhis2/app-runtime'
 import { get, post } from '../API/Dhis2.js';
+import { QUERY_LIST_OPTION_SEARCH } from '../config/constants.js';
 
 const styles = {
     container: {
@@ -29,6 +31,22 @@ const styles = {
     titleColor: appTheme.palette.primary.settingOptions.title
 }
 
+const queryResource = {
+    results: {
+        resource: 'programs',
+        params: ({ valueToSearch }) => ({
+            fields: ['id', 'name', 'displayName~rename(label)'],
+            filter: [`displayName:like:${valueToSearch}`]
+        })
+    }
+};
+
+const queryListOptionSearch = {
+    results: {
+        resource: QUERY_LIST_OPTION_SEARCH
+    }
+};
+
 export const Filter = (props) => {
     const [value, setValue] = useState('name')
     const [valueSelected, setValueSelected] = useState({
@@ -39,6 +57,8 @@ export const Filter = (props) => {
     })
     const [optionFilter, setOptionFilter] = useState([])
     const [listOptionSearch, setListOptionSearch] = useState([])
+
+    const { refetch: fetchListOptionSearch } = useDataQuery(queryListOptionSearch, {lazy: true});
 
     const handleChange = (event) => {
         let vSelected = optionFilter.filter(val => val.value == event.target.value)
@@ -70,7 +90,6 @@ export const Filter = (props) => {
     }
 
     const getResourceSelected = async (resource, urlAPI) => {
-
         let result = {};
         try {
             let res = await get('/' + resource + urlAPI)
@@ -82,8 +101,10 @@ export const Filter = (props) => {
         return result
     }
 
-    const searchOption = async (valuetoSearch) => {
-        const urlAPI = "?fields=id,name,displayName~rename(label)&filter=displayName:like:" + valuetoSearch
+    const searchOption = async (valueToSearch) => {
+        const filter = valueToSearch && valueToSearch !== ''?`&filter=displayName:ilike:${valueToSearch}`:''
+        const urlAPI = `?fields=id,name,displayName~rename(label)${filter}`
+
         return getResourceSelected(valueSelected.value, urlAPI).then(res => {
             return res[valueSelected.value]
         })
@@ -107,16 +128,16 @@ export const Filter = (props) => {
 
     useEffect(() => {
         // if listOptionSearch.json is empty, get it from dhis2
-        get('/dataStore/sharingsettingapp/listOptionSearch').then(r => {
-            if (r.httpStatusCode === 404) {
+        fetchListOptionSearch().then(r => {
+            console.log(r)
+            if (!r?.results) {
                 console.log("ya no ingresa aquí")
                 setListOptionSearch(InitiallistOptionSearch)
                 setOptionFilter(InitiallistOptionSearch.options)
                 post('/dataStore/sharingsettingapp/listOptionSearch', InitiallistOptionSearch).then(r => { console.log(r) })
-            }
-            else {
-                setListOptionSearch(r)
-                setOptionFilter(r.options)
+            } else {
+                setListOptionSearch(r.results)
+                setOptionFilter(r.results.options)
             }
         }).catch(error => {
             console.log(error);

@@ -19,20 +19,17 @@ import { SharingDialog } from './sharing-dialog';
 
 import Avatar from '@mui/material/Avatar';
 
-import CircularProgress from '@mui/material/CircularProgress';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 //Component
-import ListSelect from './ListSelect.component';
 import appTheme from '../theme';
-import IndividualSharingSetting from './IndividualSharingSetting';
-import SpecialButton from './SpecialButton';
+
 //dhis2
 import i18n from '../locales/index.js';
-import { post, get } from '../API/Dhis2.js';
-import { value } from 'jsonpath';
+import { useDataMutation, useDataQuery } from '@dhis2/app-runtime'
+
 
 
 const styles = {
@@ -124,8 +121,37 @@ const styles = {
     errorMessaje: {
         color: appTheme.palette.primary.error
     }
-
 }
+
+const queryUsers = {
+    results: {
+        resource: 'users',
+        params: {
+            fields: ['id', 'name', 'displayName'],
+            paging: false
+        }
+    }
+};
+
+const queryUserGroups = {
+    results: {
+        resource: 'userGroups',
+        params: {
+            fields: ['id', 'name', 'displayName'],
+            paging: false
+        }
+    }
+};
+
+const sharingsMutation = {
+    resource: 'sharing',
+    type: 'update',
+    params: ({ type, id }) => ({
+        type,
+        id
+    }),
+    data: ({ data }) => data
+};
 
 export const BulkMode = (props) => {
 
@@ -140,7 +166,7 @@ export const BulkMode = (props) => {
     const [objectSelectedview, setObjectSelectedview] = useState([])
     const [openModal, setOpenModal] = useState(false)
     const [page, setPage] = useState(1)
-    const [progress, setProgress] = useState(0)
+    const [progressValue, setProgressValue] = useState(0)
     const [PublicAccess, setPublicAccess] = useState(0)
     const [stepIndex, setStepIndex] = useState(0)
     const [togSelected, setTogSelected] = useState("overwrite")
@@ -152,16 +178,10 @@ export const BulkMode = (props) => {
         }
     )
 
-    //query resource Selected
-    const setResourceSelected = async (urlAPI, Payload) => {
-        try {
-            let res = await post(urlAPI, Payload)
-            return res;
-        }
-        catch (e) {
-            return (e)
-        }
-    }
+    const { refetch: usersRefetch } = useDataQuery(queryUsers, { lazy: true })
+    const { refetch: userGroupsRefetch } = useDataQuery(queryUserGroups, { lazy: true })
+
+    const [mutateSharings] = useDataMutation(sharingsMutation, { lazy: true })
 
     const removeAll = () => {
         let userAndGroupsSelected = {
@@ -172,21 +192,20 @@ export const BulkMode = (props) => {
     }
 
     const setObjectSetting = ({ data }) => {
+        console.log(data)
         setUserAndGroupsSelected(data.object)
     }
 
     //query resource Selected
     const getUsersandGroups = async () => {
-        let api_users = "/users?fields=id,name,displayName&paging=false"
-        let api_usersgroups = "/userGroups?fields=id,name,displayName&paging=false"
         let result = { users: [], userGroups: [] }
         try {
-            let result_users = await get(api_users)
-            if (result_users.users.length > 0)
-                result.users = result_users.users
-            let result_groups = await get(api_usersgroups)
-            if (result_groups.userGroups.length > 0)
-                result.userGroups = result_groups.userGroups
+            let result_users = await usersRefetch()
+            if (result_users.results.users.length > 0)
+                result.users = result_users.results.users
+            let result_groups = await userGroupsRefetch()
+            if (result_groups.results.userGroups.length > 0)
+                result.userGroups = result_groups.results.userGroups
             return result
         }
         catch (e) {
@@ -195,25 +214,21 @@ export const BulkMode = (props) => {
     }
 
     const saveSetting = () => {
-        setStepIndex(stepIndex + 1)
+        setStepIndex(2)
         SendInformationAPI(0, [], 0, 0)
-        //setTimeout(()=>{SendInformationAPI()  }, 3000);
     }
 
     const SendInformationAPI = (index, obImported, Imported, noImported) => {
-        let access = { 0: "--", 1: "r-", 2: "rw" };
-        // let obImported = [];
-        // let Imported=0;
-        // let noImported=0;
         let obj = objectSelected[index];
-        //objectSelected.forEach((obj, index) => {
-        let stringUserPublicAccess = access[PublicAccess] + "------";
-        let userAccesses = userAndGroupsSelected.userAccesses;
-        let userGroupAccesses = userAndGroupsSelected.userGroupAccesses;
+
+        let stringUserPublicAccess = userAndGroupsSelected.publicAccess
+        let userAccesses = userAndGroupsSelected.userAccesses
+        let userGroupAccesses = userAndGroupsSelected.userGroupAccesses
+
         //Merge the current setting ---
         if (togSelected == "keep") {
-            userAccesses = userAccesses.concat(obj.userAccesses),
-                userGroupAccesses = userGroupAccesses.concat(obj.userGroupAccesses)
+            userAccesses = userAccesses.concat(obj.userAccesses)
+            userGroupAccesses = userGroupAccesses.concat(obj.userGroupAccesses)
         }
 
         let valToSave = {
@@ -230,48 +245,41 @@ export const BulkMode = (props) => {
                 userAccesses,
                 userGroupAccesses
             }
-
         }
-        setResourceSelected("/sharing?type=" + props.resource.key + "&id=" + obj.value, valToSave).then(res => {
+
+        mutateSharings({
+            data: valToSave,
+            type: props.resource.key,
+            id: obj.value
+        }).then((res) => {
             if (res.status == "OK") {
                 Imported++
-            }
-            else {
+            } else {
                 noImported++
             }
             obImported.push({ label: obj.label, status: res.status, message: res.message })
-            if (index == objectSelected.length - 1) {
-
-                setMessajeSuccessful(
-                    {
-                        numImported: Imported,
-                        numNoImported: noImported,
-                        obImported
-                    })
-                setStepIndex(stepIndex + 1)
-                setFinished(stepIndex >= 2)
-
+            if (index >= objectSelected.length - 1) {
+                setMessajeSuccessful({
+                    numImported: Imported,
+                    numNoImported: noImported,
+                    obImported
+                })
+                setStepIndex(3)
+            } else {
+                SendInformationAPI(index + 1, obImported, Imported, noImported)
             }
-            else {
-                setProgress(index)
-            }
-            SendInformationAPI(index + 1, obImported, Imported, noImported)
+            setProgressValue(index)
         }).catch(er => {
             noImported++;
-            console.log("Error Interno >", er)
+            console.log("INTERNAL ERROR >>>", er)
         });
-
-        //})
-
     }
 
     const handleNext = () => {
         if ((objectSelected.length > 0 && stepIndex == 0) || (userAndGroupsSelected.userAccesses.length + userAndGroupsSelected.userGroupAccesses.length > 0 && stepIndex == 1)) {
-            setStepIndex(stepIndex + 1)
-            setFinished(stepIndex >= 3)
+            setStepIndex(1)
             setMessajeError("")
-        }
-        else {
+        } else {
             setMessajeError(i18n.t("Select at least one object, user or group"))
         }
     }
@@ -346,14 +354,12 @@ export const BulkMode = (props) => {
                                 group.access = "r-------"
                             }
                             userAndGroupsSelected.userGroupAccesses.push(group)
-                        }
-                        else {
+                        } else {
                             if (userAndGroupsSelected.userGroupAccesses[_group].access === "r-------") {
                                 userAndGroupsSelected.userGroupAccesses[_group].access = "r-------"
                             }
                         }
                     })
-
 
                     nList.push(obSelected);
                     if (inx === values.selected.length - 1) {
@@ -366,14 +372,11 @@ export const BulkMode = (props) => {
                     console.log(e)
                 }
             })
-        }
-        else {
-
+        } else {
             setObjectSelectedview(values.selected)
             setObjectSelected(nList)
             setMessajeError("")
             setUserAndGroupsSelected(userAndGroupsSelected)
-
         }
     }
 
@@ -384,17 +387,8 @@ export const BulkMode = (props) => {
         }
     }
 
-    const HandleClickButton = (data) => {
-        let access = { "--": 0, "r-": 1, "rw": 2 }
-        setPublicAccess(data.value)
-    }
-
     const handleClose = () => {
         setOpenModal(false)
-    }
-
-    const handleOpen = () => {
-        setOpenModal(true)
     }
 
     const fillListObject = (listObject) => {
@@ -429,7 +423,6 @@ export const BulkMode = (props) => {
             setExternalAccess(false)
         else
             setExternalAccess(true)
-
     }
 
     const exitEditMode = () => {
@@ -456,13 +449,12 @@ export const BulkMode = (props) => {
         props.reloadData(page)
     }
 
-    const getStepContent = (stepIndex) => {
-        switch (stepIndex) {
+    const getStepContent = (stepEval) => {
+        switch (stepEval) {
             case 0:
                 return (
                     <div>
                         <div style={styles.containterList}>
-
                             <Transfer
                                 onChange={handleList}
                                 options={objectAvailable}
@@ -476,14 +468,11 @@ export const BulkMode = (props) => {
                                 <Button onClick={handleSelectAll} labelColor={styles.ButtonActived.textColor} backgroundColor={styles.ButtonActived.backgroundColor} style={styles.ButtonSelect} variant="outlined">{i18n.t(" ASSING All (") + props.pager.total + ") →"}</Button>
                             </div>
                         </div>
-
                     </div>
                 )
             case 1:
                 return (
-
                     <div style={styles.containterStrategy}>
-
                         <Paper style={styles.papers}>
                             <div style={styles.subtitles}>{i18n.t("Strategy to save Sharing Setting to all object selected")}</div>
                             <Divider />
@@ -515,13 +504,9 @@ export const BulkMode = (props) => {
                                         checked={(togSelected == "keep" ? true : false)}
                                     />} label={i18n.t("Merge with current Sharing settings")} />
                                 </FormGroup>
-
                             </div>
                         </Paper>
-
                     </div>
-
-
                 );
             case 2:
                 const normalise = (value) => ((value - 0) * 100) / (objectSelected.length - 1);
@@ -530,11 +515,11 @@ export const BulkMode = (props) => {
 
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Box sx={{ width: '100%', mr: 1 }}>
-                                <LinearProgress variant="determinate" value={normalise(progress)} />
+                                <LinearProgress variant="determinate" value={normalise(progressValue)} />
                             </Box>
                             <Box sx={{ minWidth: 35 }}>
                                 <Typography variant="body2" color="success">{`${Math.round(
-                                    normalise(progress)
+                                    normalise(progressValue)
                                 )}%`}</Typography>
                             </Box>
                         </Box>
@@ -592,6 +577,11 @@ export const BulkMode = (props) => {
             }
         }
     }, [props.listObject])
+
+    useEffect(() => {
+        console.log(stepIndex)
+        setFinished(stepIndex >= 3)
+    }, [stepIndex])
 
 
     return (
